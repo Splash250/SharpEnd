@@ -31,9 +31,9 @@ namespace SharpEnd.Server
                 serverSocket.Listen(backlog);
                 StartAccepting();
             }
-            catch(Exception e)
+            catch(Exception)
             {
-                throw e;
+                throw;
             }
         }
         private void StartAccepting()
