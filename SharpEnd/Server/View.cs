@@ -1,0 +1,51 @@
+﻿namespace SharpEnd.Server
+{
+    public class View
+    {
+        public string Name { get; set; }
+        public string Content { get; set; }
+        
+        public View()
+        {
+            Name = string.Empty;
+            Content = string.Empty;
+        }
+
+        public View(string name, string fileName)
+        {
+            Name = name;
+            try { Content = File.ReadAllText(fileName); }
+            catch (Exception e) { throw e; }
+        }
+
+        public static View Parse(string name, string fileName, string[] variables)
+        {
+            View view = new()
+            {
+                Name = name
+            };
+            try
+            {
+                string content = File.ReadAllText(fileName);
+                view.Content = ParseContent(content, variables);
+            }
+            catch (Exception e) { throw e; }
+
+            
+            return view;
+        }
+        private static string ParseContent(string content, string[] variables) 
+        {
+            string rawContent = content;
+            for (int i = 0; i < variables.Length; i++)
+            {
+                string[] variableParts = variables[i].Split('=');
+                rawContent = rawContent.Replace(
+                    "{{" + variableParts[0] + "}}", 
+                    variableParts[1]
+                    );
+            }
+            return rawContent;
+        }
+    }
+}

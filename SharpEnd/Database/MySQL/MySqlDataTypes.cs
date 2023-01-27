@@ -1,0 +1,35 @@
+﻿namespace SharpEnd.MySQL
+{
+    public enum MySqlDataType
+    {
+        TINYINT,
+        SMALLINT,
+        MEDIUMINT,
+        INT,
+        BIGINT,
+        FLOAT,
+        DOUBLE,
+        DECIMAL,
+        DATE,
+        DATETIME,
+        TIMESTAMP,
+        TIME,
+        YEAR,
+        CHAR,
+        VARCHAR,
+        TINYTEXT,
+        TEXT,
+        MEDIUMTEXT,
+        LONGTEXT,
+        BINARY,
+        VARBINARY,
+        TINYBLOB,
+        MEDIUMBLOB,
+        BLOB,
+        LONGBLOB,
+        ENUM,
+        SET,
+        BIT,
+        BOOL,
+    }
+}

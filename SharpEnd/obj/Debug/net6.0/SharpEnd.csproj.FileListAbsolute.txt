@@ -1,0 +1,12 @@
+C:\Users\SplashDev\source\repos\SharpEnd\SharpEnd\obj\Debug\net6.0\SharpEnd.csproj.AssemblyReference.cache
+C:\Users\SplashDev\source\repos\SharpEnd\SharpEnd\obj\Debug\net6.0\SharpEnd.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\SplashDev\source\repos\SharpEnd\SharpEnd\obj\Debug\net6.0\SharpEnd.AssemblyInfoInputs.cache
+C:\Users\SplashDev\source\repos\SharpEnd\SharpEnd\obj\Debug\net6.0\SharpEnd.AssemblyInfo.cs
+C:\Users\SplashDev\source\repos\SharpEnd\SharpEnd\obj\Debug\net6.0\SharpEnd.csproj.CoreCompileInputs.cache
+C:\Users\SplashDev\source\repos\SharpEnd\SharpEnd\bin\Debug\net6.0\SharpEnd.deps.json
+C:\Users\SplashDev\source\repos\SharpEnd\SharpEnd\bin\Debug\net6.0\SharpEnd.dll
+C:\Users\SplashDev\source\repos\SharpEnd\SharpEnd\bin\Debug\net6.0\SharpEnd.pdb
+C:\Users\SplashDev\source\repos\SharpEnd\SharpEnd\obj\Debug\net6.0\SharpEnd.dll
+C:\Users\SplashDev\source\repos\SharpEnd\SharpEnd\obj\Debug\net6.0\refint\SharpEnd.dll
+C:\Users\SplashDev\source\repos\SharpEnd\SharpEnd\obj\Debug\net6.0\SharpEnd.pdb
+C:\Users\SplashDev\source\repos\SharpEnd\SharpEnd\obj\Debug\net6.0\ref\SharpEnd.dll
