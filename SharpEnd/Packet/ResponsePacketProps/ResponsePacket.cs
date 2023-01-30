@@ -1,4 +1,5 @@
-﻿using SharpEnd.Server;
+﻿using SharpEnd.Resources;
+using SharpEnd.Server;
 
 namespace SharpEnd.Packet
 {

@@ -1,6 +1,6 @@
 ﻿using SharpEnd.Packet;
 
-namespace SharpEnd.Server
+namespace SharpEnd.Resources
 {
     public class Route
     {

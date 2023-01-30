@@ -8,19 +8,12 @@ Server server = new();
 server.Start(8080, 20);
 server.AddRoute("/index", Controller.Index);
 server.AddRoute("/other", Controller.OtherPage);
+server.AddRoute("/db", Controller.DatabasePage);
 DB DB = new();
 DB.Migrate();
 DB.Seed();
 
-Model model = new(DB.Connection, "testTable");
-MySqlQuery query = new MySqlQuery();
-model.SelectItems(DB.Connection,
-                  query.Select("*").From("testTable"));
 
-foreach (dynamic row in model.rows)
-{
-    Console.WriteLine(row.testName);
-}
 Console.ReadKey();
 
 

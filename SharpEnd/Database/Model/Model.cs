@@ -2,6 +2,7 @@
 using SharpEnd.MySQL;
 using SharpEnd.ORM;
 using System.Collections;
+using System.Reflection;
 
 namespace SharpEnd.Model
 {
@@ -10,12 +11,12 @@ namespace SharpEnd.Model
 
         public Type ModelType { get; set; }
         public string TableName { get; set; }
-        public IList? rows { get; set; }
+        public IList? Rows { get; set; }
         public Model(Type modelType, string tableName)
         {
             ModelType = modelType;
             TableName = tableName;
-            rows = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(ModelType));
+            Rows = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(ModelType));
 
         }
 
@@ -24,7 +25,7 @@ namespace SharpEnd.Model
             DynamicRelationClassBuilder builder = new(connection, tableName);
             ModelType = builder.GetType();
             TableName = tableName;
-            rows = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(ModelType));
+            Rows = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(ModelType));
 
         }
 
@@ -33,11 +34,11 @@ namespace SharpEnd.Model
             DynamicRelationClassBuilder builder = new(connection, tableName);
             ModelType = builder.GetType();
             TableName = tableName;
-            rows = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(ModelType));
-            SelectItems(connection, query);
+            Rows = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(ModelType));
+            Query(connection, query);
         }
 
-        public void SelectItems(MySqlDataBaseConnection mySqlConnection, MySqlQuery query)
+        public void Query(MySqlDataBaseConnection mySqlConnection, MySqlQuery query)
         {
             using MySqlConnection connection = mySqlConnection.GetConnection();
             connection.Open();
@@ -51,10 +52,23 @@ namespace SharpEnd.Model
                 {
                     property.SetValue(tableRow, Convert.ChangeType(reader[property.Name], property.PropertyType));
                 }
-                rows.Add(tableRow);
+                Rows.Add(tableRow);
             }
         }
 
+        public List<string> GetPropertyStrings()
+        {
+            return ModelUtils.GetPropertyStrings(this);
+        }
 
+        public PropertyInfo[] GetProperties()
+        {
+            return ModelUtils.GetProperties(this);
+        }
+
+        public Type GetType()
+        {
+            return ModelType;
+        }
     }
 }
