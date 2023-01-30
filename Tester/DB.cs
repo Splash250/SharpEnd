@@ -10,7 +10,7 @@ namespace Tester
     internal class DB
     {
         private static readonly MySqlConfig CFG = new("127.0.0.1", "3306", "root","", "test");
-        private MySqlDataBaseConnection Connection;
+        public MySqlDataBaseConnection Connection { get; private set; }
 
         public DB() 
         {
