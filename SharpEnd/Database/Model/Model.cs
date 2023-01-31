@@ -12,6 +12,8 @@ namespace SharpEnd.Model
         public Type ModelType { get; set; }
         public string TableName { get; set; }
         public IList? Rows { get; set; }
+
+
         public Model(Type modelType, string tableName)
         {
             ModelType = modelType;
@@ -37,6 +39,8 @@ namespace SharpEnd.Model
             Rows = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(ModelType));
             Query(connection, query);
         }
+
+        public PropertyInfo[] Properties { get => GetProperties(); }
 
         public void Query(MySqlDataBaseConnection mySqlConnection, MySqlQuery query)
         {
@@ -66,7 +70,22 @@ namespace SharpEnd.Model
             return ModelUtils.GetProperties(this);
         }
 
-        public Type GetType()
+        public List<string>[] GetRowDataMatrix()
+        {
+            return ModelUtils.GetRowDataMatrix(this);
+        }
+
+        public static List<string> GetRowValueStrings(object? RowObject)
+        {
+            return ModelUtils.GetRowValueStrings(RowObject);
+        }
+
+        public override string ToString()
+        {
+            return TableName;
+        }
+
+        public new Type GetType()
         {
             return ModelType;
         }

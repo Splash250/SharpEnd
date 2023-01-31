@@ -45,6 +45,15 @@ namespace SharpEnd.Server
             return ms.ToArray();
         }
 
+        public static async void SendFileAsync(Socket client, string filePath)
+        {
+            byte[] fileBytes = File.ReadAllBytes(filePath);
+            var sendAR = client.BeginSend(fileBytes, 0, fileBytes.Length, 0, null, null);
+            await Task.Factory.FromAsync(sendAR, iar => client.EndSend(iar));
+        }
+
+        
+
         public static async void SendBytesAsync(Socket client, byte[] bytes)
         {
             var sendAR = client.BeginSend(bytes, 0, bytes.Length, 0, null, null);

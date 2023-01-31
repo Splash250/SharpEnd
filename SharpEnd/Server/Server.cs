@@ -92,15 +92,21 @@ namespace SharpEnd.Server
         private ResponsePacket HandleRequest(RequestPacket requestPacket)
         {
             ResponsePacket? responsePacket = null;
-            Route route = routes.GetRoute(requestPacket.Path);
-            if (route != null)
+
+            if (!Utility.IsFilePath(requestPacket.Path)) 
             {
-                responsePacket = route.Controller(requestPacket);
+                Route route = routes.GetRoute(requestPacket.Path);
+                if (route != null)
+                    responsePacket = route.Controller(requestPacket);
+                else
+
+                    responsePacket = DefaultResponsePackets.NotFoundPacket;
             }
             else
-            {
+                //not yet implemented but here we should send the actual file bytes 
                 responsePacket = DefaultResponsePackets.NotFoundPacket;
-            }
+
+
             return responsePacket;
         }
 

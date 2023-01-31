@@ -35,5 +35,9 @@
             }
             return keys;
         }
+        public static bool IsFilePath(string path)
+        {
+            return File.Exists(path);
+        }
     }
 }

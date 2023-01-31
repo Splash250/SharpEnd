@@ -60,7 +60,7 @@ namespace Tester
                 "other",
                 "../../../../html/db.html",
                 new string[] {
-                    $"pageData=<h1>{model.TableName}'s cell names are:</h1> <br>" + String.Join("<br>", model.GetPropertyStrings()),
+                    $"pageData={CreatePageData(model)}"
                 });
             return new ResponsePacket(
                 PacketProtocol.Default,
@@ -74,22 +74,25 @@ namespace Tester
 
         public static string CreatePageData(Model fromModel) 
         {
-            //List<string> tableHeads = fromModel.GetPropertyStrings();
-            //List<string> tableRows = new List<string>();
-            //foreach (dynamic row in fromModel.Rows)
-            //{
-            //    List<string> cells = new List<string>();
-            //    foreach (var property in row.GetType().GetProperties())
-            //    {
-            //        string value = property.GetValue(row);
-            //        cells.Add(value);
-            //    }
-            //    string rowString = $"<tr><td>{String.Join("</td><td>", cells)}</td></tr>";
-            //    tableRows.Add(rowString);
-            //}
-            //string table = $"<table><tr><th>{String.Join("</th><th>", tableHeads)}</th></tr>{String.Join("", tableRows)}</table>";
-            //return table;
-            throw new NotImplementedException();
+            List<string>[] RowData = fromModel.GetRowDataMatrix();
+            List<string> Headers = fromModel.GetPropertyStrings();
+            string pageData = "<table><tr>";
+            foreach (string header in Headers)
+            {
+                pageData += $"<th>{header}</th>";
+            }
+            pageData += "</tr>";
+            foreach (List<string> row in RowData)
+            {
+                pageData += "<tr>";
+                foreach (string value in row)
+                {
+                    pageData += $"<td>{value}</td>";
+                }
+                pageData += "</tr>";
+            }
+            pageData += "</table>";
+            return pageData;
         }
     }
 }
