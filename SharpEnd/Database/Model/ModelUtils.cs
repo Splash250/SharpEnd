@@ -1,31 +1,19 @@
-﻿using System.Reflection;
+﻿using SharpEnd.ORM;
+using System.Collections;
+using System.Reflection;
 
 namespace SharpEnd.Model
 {
     internal static class ModelUtils
     {
-        public static List<string> GetPropertyStrings(Model model)
+        public static List<string> GetPropertyStrings(ObjectRelationMapper map)
         {
             List<string> props = new List<string>();
-            foreach (var property in model.GetType().GetProperties())
+            foreach (var property in map.GetType().GetProperties())
             {
                 props.Add(property.Name);
             }
             return props;
-        }
-        public static PropertyInfo[] GetProperties(Model model)
-        {
-            return model.GetType().GetProperties();
-        }
-
-        public static List<string>[] GetRowDataMatrix(Model model) 
-        {
-            List<string>[] matrix = new List<string>[model.Rows.Count];
-            for (int i = 0; i < model.Rows.Count; i++)
-            {
-                matrix[i] = GetRowValueStrings(model.Rows[i]);
-            }
-            return matrix;
         }
         public static List<string> GetRowValueStrings(object? RowObject) 
         {
@@ -40,6 +28,11 @@ namespace SharpEnd.Model
         private static PropertyInfo[] GetPropertyInfos(object? Object)
         {
             return Object.GetType().GetProperties();
+        }
+
+        public static IList? EmptyTypeList(Type type) 
+        {
+            return (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type));
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace SharpEnd.MySQL
+﻿using MySql.Data.MySqlClient;
+
+namespace SharpEnd.MySQL
 {
     public class MySqlQuery
     {
@@ -102,6 +104,17 @@
                 MySqlString += " ";
             }
             MySqlString += String.Join(" ", new string[2] { action, clause });
+        }
+
+        public string Merge(MySqlQuery other) 
+        {
+            return ToString() + other.ToString();
+        }
+        public MySqlCommand GetCommand(MySqlConnection connection) 
+        {
+            MySqlCommand command = connection.CreateCommand();
+            command.CommandText = ToString();
+            return command;
         }
         public override string ToString()
         {

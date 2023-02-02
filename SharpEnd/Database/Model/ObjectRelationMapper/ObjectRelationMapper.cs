@@ -6,14 +6,14 @@ using SharpEnd.MySQL;
 
 namespace SharpEnd.ORM
 {
-    internal class DynamicRelationClassBuilder
+    internal class ObjectRelationMapper
     {
 
         private MySqlDataBaseConnection connection;
         private readonly string tableName;
         private Type type;
 
-        public DynamicRelationClassBuilder(MySqlDataBaseConnection connection, string tableName)
+        public ObjectRelationMapper(MySqlDataBaseConnection connection, string tableName)
         {
             this.connection = connection;
             this.tableName = tableName;
