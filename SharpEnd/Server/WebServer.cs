@@ -9,11 +9,20 @@ namespace SharpEnd.Server
     internal class WebServer
     {
         private List<Socket> Clients { get; set; }
-        private readonly Socket serverSocket;
+        private Socket serverSocket;
         private bool isRunning;
         public static string HTMLPath { get; private set; } = "html";
         public Routes routes;
         public WebServer(string HTMLPath)
+        {
+            SetDefaults();
+            WebServer.HTMLPath = HTMLPath;
+        }
+        public WebServer()
+        {
+            SetDefaults();
+        }
+        private void SetDefaults() 
         {
             serverSocket = new Socket(
                 AddressFamily.InterNetwork,
@@ -22,7 +31,7 @@ namespace SharpEnd.Server
             Clients = new List<Socket>();
             isRunning = true;
             routes = new Routes();
-            WebServer.HTMLPath = HTMLPath;
+
         }
         public void Start(int port, int backlog)
         {

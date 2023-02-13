@@ -65,7 +65,7 @@ namespace SharpEnd.Model
             return tableRow;
         }
 
-        public void Save()
+        public void SaveInstance()
         {
             if (Instance == null)
             {

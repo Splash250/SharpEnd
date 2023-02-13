@@ -1,9 +1,5 @@
-﻿using SharpEnd.Server;
-using SharpEnd;
-using SharpEnd.Packet;
+﻿using SharpEnd.Packet;
 using SharpEnd.Resources;
-using SharpEnd.Model;
-using SharpEnd.MySQL;
 
 namespace Tester
 {

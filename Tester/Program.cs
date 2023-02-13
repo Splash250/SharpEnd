@@ -18,7 +18,7 @@ test.Instance.testName = "customTest";
 test.Instance.sucessful = 0;
 test.Instance.testReturnNumber = 3;
 Console.WriteLine(test.Instance.testName);
-test.Save();
+test.SaveInstance();
 
 Console.ReadKey();
 
