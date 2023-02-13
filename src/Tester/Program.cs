@@ -12,6 +12,9 @@ app.Route(RequestMethod.GET, "/db", Controller.DatabasePage);
 
 app.Start(8080, 20);
 DB DB = new();
+DB.Migrate();
+DB.Seed();
+
 Test test = new Test(DB.Connection);
 
 test.Instance.testName = "customTest";
