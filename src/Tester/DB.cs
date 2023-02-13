@@ -1,15 +1,10 @@
 ﻿using SharpEnd.MySQL;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tester
 {
     internal class DB
     {
-        private static readonly MySqlConfig CFG = new("127.0.0.1", "3306", "root","", "test");
+        private static readonly MySqlConfig CFG = new("127.0.0.1", "3306", "root","", "sharpend");
         public MySqlDataBaseConnection Connection { get; private set; }
 
         public DB() 
