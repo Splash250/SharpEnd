@@ -6,6 +6,10 @@
                                                     ResponseCode.NotFound,
                                                     new PacketHeaders(new string[] { "Content-Length: 0" }),
                                                     "");
+        public static ResponsePacket MethodNotAllowed = new ResponsePacket(PacketProtocol.Default,
+                                                    ResponseCode.MethodNotAllowed,
+                                                    new PacketHeaders(new string[] { "Content-Length: 0" }),
+                                                    "");
     }
 }
 

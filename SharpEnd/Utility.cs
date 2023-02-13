@@ -1,4 +1,5 @@
-﻿namespace SharpEnd
+﻿
+namespace SharpEnd
 {
     internal static class Utility
     {
@@ -39,5 +40,7 @@
         {
             return File.Exists(path);
         }
+
+
     }
 }

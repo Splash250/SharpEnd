@@ -1,4 +1,5 @@
-﻿using System.Net.Sockets;
+﻿using SharpEnd.Packet;
+using System.Net.Sockets;
 using System.Text;
 
 namespace SharpEnd.Server
@@ -18,8 +19,8 @@ namespace SharpEnd.Server
 
             while (socket.Available > 0)
             {
-                var currByte = new Byte[1];
-                var byteCounter = socket.Receive(currByte, currByte.Length, SocketFlags.None);
+                byte[] currByte = new Byte[1];
+                int byteCounter = socket.Receive(currByte, currByte.Length, SocketFlags.None);
 
                 if (byteCounter.Equals(1))
                 {
@@ -34,7 +35,7 @@ namespace SharpEnd.Server
         {
             byte[] buffer = new byte[Utility.DefaultBufferSize];
             int bytesRead;
-            using var ms = new MemoryStream();
+            using MemoryStream ms = new MemoryStream();
             do
             {
                 var receiveAR = client.BeginReceive(buffer, 0, buffer.Length, 0, null, null);
@@ -48,17 +49,48 @@ namespace SharpEnd.Server
         public static async void SendFileAsync(Socket client, string filePath)
         {
             byte[] fileBytes = File.ReadAllBytes(filePath);
-            var sendAR = client.BeginSend(fileBytes, 0, fileBytes.Length, 0, null, null);
-            await Task.Factory.FromAsync(sendAR, iar => client.EndSend(iar));
+            int chunkSize = 1024;
+            int index = 0;
+            while (index < fileBytes.Length)
+            {
+                int remaining = fileBytes.Length - index;
+                int size = Math.Min(chunkSize, remaining);
+                client.Send(fileBytes, index, size, SocketFlags.None);
+                index += size;
+            }
         }
 
-        
+
 
         public static async void SendBytesAsync(Socket client, byte[] bytes)
         {
-            var sendAR = client.BeginSend(bytes, 0, bytes.Length, 0, null, null);
+            IAsyncResult sendAR = client.BeginSend(bytes, 0, bytes.Length, 0, null, null);
             await Task.Factory.FromAsync(sendAR, iar => client.EndSend(iar));
 
+        }
+
+        public static async void SendResponsePacketAsync(Socket client, ResponsePacket responsePacket)
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(responsePacket.ToString());
+            IAsyncResult sendAR = client.BeginSend(bytes, 0, bytes.Length, 0, null, null);
+            await Task.Factory.FromAsync(sendAR, iar => client.EndSend(iar));
+
+        }
+
+
+        public static bool IsFileRequest(RequestPacket requestPacket)
+        {
+            return Utility.IsFilePath(WebServer.HTMLPath + requestPacket.Path);
+        }
+        public static ResponsePacket CraftFileSendHeaderPacket(int contentLength) 
+        {
+            return new ResponsePacket(PacketProtocol.Default,
+                                        ResponseCode.OK,
+                                        new PacketHeaders(new string[]
+                                        {
+                                            "Content-Length: " + contentLength
+                                        }),
+                                        "");
         }
     }
 }

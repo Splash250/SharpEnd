@@ -25,7 +25,7 @@ namespace SharpEnd.Model
             return values;
         }
 
-        private static PropertyInfo[] GetPropertyInfos(object? Object)
+        public static PropertyInfo[] GetPropertyInfos(object? Object)
         {
             return Object.GetType().GetProperties();
         }
@@ -34,5 +34,7 @@ namespace SharpEnd.Model
         {
             return (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type));
         }
+
+
     }
 }

@@ -1,6 +1,4 @@
-﻿using MySql.Data.MySqlClient;
-
-namespace SharpEnd.MySQL
+﻿namespace SharpEnd.MySQL
 {
     public class Migration
     {

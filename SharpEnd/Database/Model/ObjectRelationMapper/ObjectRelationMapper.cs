@@ -73,6 +73,7 @@ namespace SharpEnd.ORM
 
         private static void CreateProperty(TypeBuilder typeBuilder, string propertyName, Type propertyType)
         {
+            Console.WriteLine(propertyType.Name);
             FieldBuilder fieldBuilder = typeBuilder.DefineField("_" + propertyName,
                                                                 propertyType,
                                                                 FieldAttributes.Private);

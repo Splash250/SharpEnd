@@ -1,4 +1,6 @@
-﻿namespace SharpEnd.Resources
+﻿using SharpEnd.Server;
+
+namespace SharpEnd.Resources
 {
     public class View
     {
@@ -18,7 +20,7 @@
             catch (Exception e) { throw e; }
         }
 
-        public static View Parse(string name, string fileName, string[] variables)
+        public static View Create(string name, string fileName, string[] variables)
         {
             View view = new()
             {
@@ -26,7 +28,7 @@
             };
             try
             {
-                string content = File.ReadAllText(fileName);
+                string content = File.ReadAllText(WebServer.HTMLPath + "/" + fileName);
                 view.Content = ParseContent(content, variables);
             }
             catch (Exception e) { throw e; }

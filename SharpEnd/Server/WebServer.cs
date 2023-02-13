@@ -6,13 +6,14 @@ using SharpEnd.Resources;
 
 namespace SharpEnd.Server
 {
-    public class Server
+    internal class WebServer
     {
         private List<Socket> Clients { get; set; }
         private readonly Socket serverSocket;
         private bool isRunning;
+        public static string HTMLPath { get; private set; } = "html";
         public Routes routes;
-        public Server()
+        public WebServer(string HTMLPath)
         {
             serverSocket = new Socket(
                 AddressFamily.InterNetwork,
@@ -21,6 +22,7 @@ namespace SharpEnd.Server
             Clients = new List<Socket>();
             isRunning = true;
             routes = new Routes();
+            WebServer.HTMLPath = HTMLPath;
         }
         public void Start(int port, int backlog)
         {
@@ -47,30 +49,19 @@ namespace SharpEnd.Server
                         serverSocket.BeginAccept,
                         serverSocket.EndAccept,
                         null);
-                    Console.WriteLine("Client Connected!");
-                    HandleClient(client);
+                    TryLoopHandleClient(client);
                 }
             });
         }
 
-        private async void HandleClient(Socket client)
+        private async void TryLoopHandleClient(Socket client)
         {
             Clients.Add(client);
             try
             {
                 while (isRunning)
                 {
-                    byte[] receivedBytes = await NetworkUtils.ReadAllBytesAsync(client);
-                    string data = Encoding.UTF8.GetString(receivedBytes, 0, receivedBytes.Length);
-                    RequestPacket requestPacket = new(data);
-
-                    ResponsePacket responsePacket = HandleRequest(requestPacket);
-
-                    Console.WriteLine("Received: {0}", data);
-
-                    byte[] message = Encoding.UTF8.GetBytes(responsePacket.ToString());
-                    NetworkUtils.SendBytesAsync(client, message);
-                    Console.WriteLine("Sent: {0}", responsePacket.ToString());
+                    await HandleClient(client);
                 }
             }
             catch (Exception)
@@ -79,9 +70,37 @@ namespace SharpEnd.Server
             }
 
         }
-        public void AddRoute(string path, Route.ControllerDelegate controller)
+        private async Task HandleClient(Socket client)
         {
-            routes.Add(path, controller);
+            byte[] receivedBytes = await NetworkUtils.ReadAllBytesAsync(client);
+            string data = Encoding.UTF8.GetString(receivedBytes, 0, receivedBytes.Length);
+            RequestPacket requestPacket = new(data);
+
+            if (NetworkUtils.IsFileRequest(requestPacket))
+                HandleFileResponse(client, requestPacket);
+            else
+                HandleNonFileResponse(client, requestPacket);
+
+        }
+
+        private void HandleFileResponse(Socket client, RequestPacket packet)
+        {
+            string path = HTMLPath + packet.Path;
+            int contentLength = File.ReadAllBytes(path).Length;
+            ResponsePacket responsePacket = NetworkUtils.CraftFileSendHeaderPacket(contentLength);
+            NetworkUtils.SendResponsePacketAsync(client, responsePacket);
+            NetworkUtils.SendFileAsync(client, path);
+        }
+
+        private void HandleNonFileResponse(Socket client, RequestPacket packet) 
+        {
+            ResponsePacket responsePacket = HandleRequest(packet);
+            NetworkUtils.SendResponsePacketAsync(client, responsePacket);
+        }
+
+        public void AddRoute(RequestMethod Method, string path, Route.ControllerDelegate controller)
+        {
+            routes.Add(Method, path, controller);
         }
         private void DisconnectClient(Socket client)
         {
@@ -92,25 +111,29 @@ namespace SharpEnd.Server
         private ResponsePacket HandleRequest(RequestPacket requestPacket)
         {
             ResponsePacket? responsePacket = null;
-
-            if (!Utility.IsFilePath(requestPacket.Path)) 
+            Route route = routes.GetRoute(requestPacket.Path, requestPacket.Method);
+            if (route != null) 
             {
-                Route route = routes.GetRoute(requestPacket.Path);
-                if (route != null)
+                if (route.RequestMethod == requestPacket.Method)
+                {
                     responsePacket = route.Controller(requestPacket);
+                    return responsePacket;
+                }
                 else
-
-                    responsePacket = DefaultResponsePackets.NotFoundPacket;
+                {
+                    //todo: custom error page support in .htaccess file
+                    responsePacket = DefaultResponsePackets.MethodNotAllowed;
+                }
             }
             else
-                //not yet implemented but here we should send the actual file bytes 
+            {
+                //todo: custom error page support in .htaccess file
                 responsePacket = DefaultResponsePackets.NotFoundPacket;
-
-
+            }
             return responsePacket;
         }
 
-        private void CloseServer()
+        public void CloseServer()
         {
             isRunning = false;
             foreach (Socket client in Clients)

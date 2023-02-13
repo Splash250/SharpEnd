@@ -2,6 +2,7 @@
 using SharpEnd.MySQL;
 using SharpEnd.ORM;
 using System.Collections;
+using System.Dynamic;
 using System.Reflection;
 
 namespace SharpEnd.Model
@@ -13,6 +14,7 @@ namespace SharpEnd.Model
         private MySqlQuery _mySqlQuery;
         private MySqlQuery _newMySqlQuery { get { return new MySqlQuery().Select("*").From(_tableName); } }
         private Type _modelType { get { return _ORMObject.GetType(); } }
+        public dynamic Instance;
         private string _tableName;
         private event EventHandler _tableNameSet;
 
@@ -31,6 +33,7 @@ namespace SharpEnd.Model
         {
             TableName = string.Empty;
             _connection = Connection;
+            Instance = new ExpandoObject();
             _tableNameSet += (sender, args) =>
             {
                 _ORMObject = new ObjectRelationMapper(_connection, _tableName);
@@ -51,6 +54,7 @@ namespace SharpEnd.Model
             }
             return Rows;
         }
+
         private object? ReadRow(MySqlDataReader reader) 
         {
             object? tableRow = Activator.CreateInstance(_modelType);
@@ -61,11 +65,23 @@ namespace SharpEnd.Model
             return tableRow;
         }
 
+        public void Save()
+        {
+            if (Instance == null)
+            {
+                throw new Exception("Instance is not initialized. Cannot perform save operation.");
+            }
+            IDictionary<string, object>? expandoDict = Instance as IDictionary<string, object>;
+            Dictionary<string, string> values = new Dictionary<string, string>();
+            foreach (var key in expandoDict.Keys)
+                values.Add(key, MySqlValueConverter.ConvertValue(expandoDict[key]));
+            MySqlActions.InsertData(_connection, TableName, values);
+        }
         public IList? All() 
         {
             return Query(_newMySqlQuery);
         }
-        public List<string> GetTableHeaders()
+        public List<string> GetColumns()
         {
             return ModelUtils.GetPropertyStrings(_ORMObject);
         }

@@ -11,9 +11,9 @@ namespace Tester
     {
         public static ResponsePacket Index(RequestPacket requestPacket)
         {
-            View view = View.Parse(
+            View view = View.Create(
                 "index",
-                "../../../../html/index.html",
+                "index.html",
                 new string[] {
                     "pathLocation=" + requestPacket.Path,
                     "randomNum=" + new Random().Next(1000)
@@ -31,9 +31,9 @@ namespace Tester
 
         public static ResponsePacket OtherPage(RequestPacket requestPacket)
         {
-            View view = View.Parse(
+            View view = View.Create(
                 "other",
-                "../../../../html/other.html",
+                "other.html",
                 new string[] {
                     "currentDate=" + DateTime.UtcNow.Date.ToString("dd/MM/yyyy"),
                 });
@@ -51,14 +51,11 @@ namespace Tester
         public static ResponsePacket DatabasePage(RequestPacket requestPacket)
         {
             DB DB = new();
-            Model model = new(DB.Connection, "testTable");
-            MySqlQuery query = new MySqlQuery();
-            model.Query(DB.Connection,
-                              query.Select("*").From("testTable"));
-
-            View view = View.Parse(
+            Test model = new(DB.Connection);
+            
+            View view = View.Create(
                 "other",
-                "../../../../html/db.html",
+                "db.html",
                 new string[] {
                     $"pageData={CreatePageData(model)}"
                 });
@@ -72,23 +69,22 @@ namespace Tester
                 view);
         }
 
-        public static string CreatePageData(Model fromModel) 
+        public static string CreatePageData(Test fromModel) 
         {
-            List<string>[] RowData = fromModel.GetRowDataMatrix();
-            List<string> Headers = fromModel.GetPropertyStrings();
             string pageData = "<table><tr>";
-            foreach (string header in Headers)
+            foreach (string header in fromModel.GetColumns())
             {
                 pageData += $"<th>{header}</th>";
             }
             pageData += "</tr>";
-            foreach (List<string> row in RowData)
+            foreach (dynamic item in fromModel.All())
             {
-                pageData += "<tr>";
-                foreach (string value in row)
-                {
-                    pageData += $"<td>{value}</td>";
-                }
+                pageData += $"<tr> " +
+                    $"<td>{item.testId}</td>" +
+                    $"<td>{item.testName}</td>" +
+                    $"<td>{item.sucessful}</td>" +
+                    $"<td>{item.testReturnNumber}</td>";
+                
                 pageData += "</tr>";
             }
             pageData += "</table>";

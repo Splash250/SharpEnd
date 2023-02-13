@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SharpEnd.Packet
+﻿namespace SharpEnd.Packet
 {
     public class PacketProtocol
     {
@@ -17,8 +15,7 @@ namespace SharpEnd.Packet
 
         public PacketProtocol(string Protocol) 
         {
-            //if protocol contains a slash, split it into name and version
-            //else, set name to protocol and version to 1.1
+
             if (Protocol.Contains('/'))
             {
                 string[] ProtocolParts = Protocol.Split(new string[] { "/" }, StringSplitOptions.None);
