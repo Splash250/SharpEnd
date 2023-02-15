@@ -1,17 +1,19 @@
-﻿using SharpEnd.MySQL;
+﻿using Org.BouncyCastle.Utilities.Net;
+using SharpEnd.Database;
+using SharpEnd.MySQL;
 
 namespace Tester
 {
-    internal class DB
+    internal class DB : Database
     {
-        private static readonly MySqlConfig CFG = new("127.0.0.1", "3306", "root","", "sharpend");
-        public MySqlDataBaseConnection Connection { get; private set; }
-
-        public DB() 
+        public DB() : base()
         {
-            Connection = new(CFG);
+            Address = "127.0.0.1";
+            Port = 3306;
+            UserName= "root";
+            Password = "";
+            DatabaseName = "sharpend";
         }
-
         public void Migrate() {
 
             Migration migration = new(Connection);
