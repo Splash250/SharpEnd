@@ -12,7 +12,7 @@ namespace SharpEnd.Server
         private Socket serverSocket;
         private bool isRunning;
         public static string HTMLPath { get; private set; } = "html";
-        public Routes routes;
+        public RouteCollection routes;
         public WebServer(string HTMLPath)
         {
             SetDefaults();
@@ -30,7 +30,7 @@ namespace SharpEnd.Server
                 ProtocolType.Tcp);
             Clients = new List<Socket>();
             isRunning = true;
-            routes = new Routes();
+            routes = new RouteCollection();
 
         }
         public void Start(int port, int backlog)

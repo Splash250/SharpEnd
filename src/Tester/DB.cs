@@ -1,12 +1,11 @@
-﻿using Org.BouncyCastle.Utilities.Net;
-using SharpEnd.Database;
+﻿using SharpEnd.Database;
 using SharpEnd.MySQL;
 
 namespace Tester
 {
     internal class DB : Database
     {
-        public DB() : base()
+        public DB()
         {
             Address = "127.0.0.1";
             Port = 3306;
@@ -38,8 +37,6 @@ namespace Tester
                     { "testReturnNumber", new Random().Next(10).ToString() }
                 });
             }
-
         }
-
     }
 }

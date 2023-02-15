@@ -3,7 +3,7 @@ using SharpEnd.MySQL;
 
 namespace Tester
 {
-    internal class Test : BaseModel
+    internal class Test : Model
     {
         public Test(MySqlDataBaseConnection connection) : base(connection) 
         {

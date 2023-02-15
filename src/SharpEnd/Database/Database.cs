@@ -4,12 +4,23 @@ namespace SharpEnd.Database
 {
     public abstract class Database
     {
-        public MySqlDataBaseConnection Connection { get; private set; }
-        public string Address { get; set; } = "127.0.0.1";
-        public int Port { get; set; } = 3306;
-        public string UserName { get; set; } = "root";
-        public string Password { get; set; } = String.Empty;
+        public string Address { get; set; }
+        public int Port { get; set; }
+        public string UserName { get; set; }
+        public string Password { get; set; }
         public string DatabaseName { get; set; }
+        private MySqlDataBaseConnection _connection;
+        public MySqlDataBaseConnection Connection
+        {
+            get
+            {
+                if (_connection == null)
+                {
+                    _connection = new MySqlDataBaseConnection(Config);
+                }
+                return _connection;
+            }
+        }
         private MySqlConfig Config 
         {
             get 
@@ -17,9 +28,5 @@ namespace SharpEnd.Database
                 return new(Address, Port.ToString(), UserName, Password, DatabaseName);
             }
         }
-
-
-
-
     }
 }

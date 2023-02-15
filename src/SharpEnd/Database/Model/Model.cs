@@ -7,16 +7,16 @@ using System.Reflection;
 
 namespace SharpEnd.Model
 {
-    public abstract class BaseModel
+    public abstract class Model
     {
         private ObjectRelationMapper _ORMObject;
         private MySqlDataBaseConnection _connection;
         private MySqlQuery _mySqlQuery;
         private MySqlQuery _newMySqlQuery { get { return new MySqlQuery().Select("*").From(_tableName); } }
         private Type _modelType { get { return _ORMObject.GetType(); } }
-        public dynamic Instance;
         private string _tableName;
         private event EventHandler _tableNameSet;
+        public dynamic Instance;
 
         public string TableName
         {
@@ -29,7 +29,7 @@ namespace SharpEnd.Model
             }
         }
 
-        public BaseModel(MySqlDataBaseConnection Connection)
+        public Model(MySqlDataBaseConnection Connection)
         {
             TableName = string.Empty;
             _connection = Connection;
@@ -92,33 +92,33 @@ namespace SharpEnd.Model
             command.CommandText = Query.ToString();
             return command;
         }
-        public BaseModel Where(string WhereClause)
+        public Model Where(string WhereClause)
         {
             _mySqlQuery.Where(WhereClause);
             return this;
         }
-        public BaseModel GroupBy(string FieldName)
+        public Model GroupBy(string FieldName)
         {
             _mySqlQuery.GroupBy(FieldName);
             return this;
 
         }
-        public BaseModel Having(string HavingClause)
+        public Model Having(string HavingClause)
         {
             _mySqlQuery.Having(HavingClause);
             return this;
         }
-        public BaseModel OrderBy(string OrderClause)
+        public Model OrderBy(string OrderClause)
         {
             _mySqlQuery.OrderBy(OrderClause);
             return this;
         }
-        public BaseModel Take(int TakeNumber)
+        public Model Take(int TakeNumber)
         {
             _mySqlQuery.Limit(TakeNumber);
             return this;
         }
-        public BaseModel Limit(int LimitNumber)
+        public Model Limit(int LimitNumber)
         {
             _mySqlQuery.Limit(LimitNumber);
             return this;
