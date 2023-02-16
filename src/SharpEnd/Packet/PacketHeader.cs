@@ -10,8 +10,6 @@
             Name = HeaderParts[0];
             Value = HeaderParts[1];
         }
-
-        //override ToString() to return the header in the format "Name: Value"
         public override string ToString()
         {
             return Name + ": " + Value;
