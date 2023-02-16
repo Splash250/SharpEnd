@@ -33,6 +33,31 @@ namespace SharpEnd.Packet
             this.Body = Body.Content;
         }
 
+
+        public ResponsePacket(ResponseCode Code, PacketHeaders Headers)
+        {
+            Protocol = PacketProtocol.Default;
+            Status = new ResponseStatus(Code);
+            this.Headers = Headers;
+            Body = String.Empty;
+        }
+
+        public ResponsePacket(ResponseCode Code, PacketHeaders Headers, string Body)
+        {
+            Protocol = PacketProtocol.Default;
+            Status = new ResponseStatus(Code);
+            this.Headers = Headers;
+            this.Body = Body;
+        }
+        public ResponsePacket(ResponseCode Code, PacketHeaders Headers, View Body)
+        {
+            Protocol = PacketProtocol.Default;
+            Status = new ResponseStatus(Code);
+            this.Headers = Headers;
+            this.Body = Body.Content;
+        }
+
+
         public ResponsePacket(string packet)
         {
 

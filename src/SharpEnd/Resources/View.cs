@@ -36,6 +36,24 @@ namespace SharpEnd.Resources
             
             return view;
         }
+
+        public static View Create(string name, string fileName)
+        {
+            View view = new()
+            {
+                Name = name
+            };
+            try
+            {
+                string content = File.ReadAllText(WebServer.HTMLPath + "/" + fileName);
+                view.Content = content;
+            }
+            catch (Exception e) { throw e; }
+
+
+            return view;
+        }
+
         private static string ParseContent(string content, string[] variables) 
         {
             string rawContent = content;
