@@ -89,8 +89,7 @@ namespace SharpEnd.Server
                                         new PacketHeaders(new string[]
                                         {
                                             "Content-Length: " + contentLength
-                                        }),
-                                        "");
+                                        }), "");
         }
     }
 }

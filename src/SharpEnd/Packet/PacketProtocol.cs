@@ -13,18 +13,18 @@
             }
         }
 
-        public PacketProtocol(string Protocol) 
+        public PacketProtocol(string protocol) 
         {
 
-            if (Protocol.Contains('/'))
+            if (protocol.Contains('/'))
             {
-                string[] ProtocolParts = Protocol.Split(new string[] { "/" }, StringSplitOptions.None);
-                Name = ProtocolParts[0];
-                Version = ProtocolParts[1];
+                string[] protocolParts = protocol.Split(new string[] { "/" }, StringSplitOptions.None);
+                Name = protocolParts[0];
+                Version = protocolParts[1];
             }
             else
             {
-                Name = Protocol;
+                Name = protocol;
                 Version = "";
             }
         }

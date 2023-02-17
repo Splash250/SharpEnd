@@ -8,15 +8,15 @@ namespace SharpEnd.Server
 {
     internal class WebServer
     {
-        private List<Socket> Clients { get; set; }
-        private Socket serverSocket;
-        private bool isRunning;
+        private List<Socket> _clients { get; set; }
+        private Socket _serverSocket;
+        private bool _isRunning;
         public static string HTMLPath { get; private set; } = "html";
         public RouteCollection routes;
-        public WebServer(string HTMLPath)
+        public WebServer(string htmlPath)
         {
             SetDefaults();
-            WebServer.HTMLPath = HTMLPath;
+            WebServer.HTMLPath = htmlPath;
         }
         public WebServer()
         {
@@ -24,12 +24,12 @@ namespace SharpEnd.Server
         }
         private void SetDefaults() 
         {
-            serverSocket = new Socket(
+            _serverSocket = new Socket(
                 AddressFamily.InterNetwork,
                 SocketType.Stream,
                 ProtocolType.Tcp);
-            Clients = new List<Socket>();
-            isRunning = true;
+            _clients = new List<Socket>();
+            _isRunning = true;
             routes = new RouteCollection();
 
         }
@@ -37,10 +37,10 @@ namespace SharpEnd.Server
         {
             try
             {
-                serverSocket.Bind(new IPEndPoint(
+                _serverSocket.Bind(new IPEndPoint(
                     IPAddress.Any,
                     port));
-                serverSocket.Listen(backlog);
+                _serverSocket.Listen(backlog);
                 StartAccepting();
             }
             catch(Exception)
@@ -52,11 +52,11 @@ namespace SharpEnd.Server
         {
             Task.Run(async () =>
             {
-                while (isRunning)
+                while (_isRunning)
                 {
                     Socket client = await Task.Factory.FromAsync(
-                        serverSocket.BeginAccept,
-                        serverSocket.EndAccept,
+                        _serverSocket.BeginAccept,
+                        _serverSocket.EndAccept,
                         null);
                     TryLoopHandleClient(client);
                 }
@@ -65,10 +65,10 @@ namespace SharpEnd.Server
 
         private async void TryLoopHandleClient(Socket client)
         {
-            Clients.Add(client);
+            _clients.Add(client);
             try
             {
-                while (isRunning)
+                while (_isRunning)
                 {
                     await HandleClient(client);
                 }
@@ -107,13 +107,13 @@ namespace SharpEnd.Server
             NetworkUtils.SendResponsePacketAsync(client, responsePacket);
         }
 
-        public void AddRoute(RequestMethod Method, string path, Route.ControllerDelegate controller)
+        public void AddRoute(RequestMethod method, string path, Route.ControllerDelegate controller)
         {
-            routes.Add(Method, path, controller);
+            routes.Add(method, path, controller);
         }
         private void DisconnectClient(Socket client)
         {
-            Clients.Remove(client);
+            _clients.Remove(client);
             client.Close();
         }
 
@@ -144,12 +144,12 @@ namespace SharpEnd.Server
 
         public void CloseServer()
         {
-            isRunning = false;
-            foreach (Socket client in Clients)
+            _isRunning = false;
+            foreach (Socket client in _clients)
             {
                 DisconnectClient(client);
             }
-            serverSocket.Close();
+            _serverSocket.Close();
         }
         
     }

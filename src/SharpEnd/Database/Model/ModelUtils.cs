@@ -15,19 +15,19 @@ namespace SharpEnd.Model
             }
             return props;
         }
-        public static List<string> GetRowValueStrings(object? RowObject) 
+        public static List<string> GetRowValueStrings(object? rowObject) 
         {
             List<string> values = new List<string>();
-            foreach (var property in GetPropertyInfos(RowObject))
+            foreach (var property in GetPropertyInfos(rowObject))
             {
-                values.Add(property.GetValue(RowObject).ToString());
+                values.Add(property.GetValue(rowObject).ToString());
             }
             return values;
         }
 
-        public static PropertyInfo[] GetPropertyInfos(object? Object)
+        public static PropertyInfo[] GetPropertyInfos(object? fromObject)
         {
-            return Object.GetType().GetProperties();
+            return fromObject.GetType().GetProperties();
         }
 
         public static IList? EmptyTypeList(Type type) 

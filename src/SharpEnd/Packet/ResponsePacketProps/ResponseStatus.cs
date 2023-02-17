@@ -7,11 +7,11 @@
         public int Code { get; private set; }
         public string Message { get; private set; }
 
-        public ResponseStatus(ResponseCode Code)
+        public ResponseStatus(ResponseCode code)
         {
-            this.StatusObject = Code;
-            this.Code = (int)Code;
-            Message = Code.ToString();
+            StatusObject = code;
+            Code = (int)code;
+            Message = code.ToString();
         }
     }
 }

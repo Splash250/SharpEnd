@@ -4,9 +4,9 @@
     {
         public string Name { get; private set; }
         public string Value { get; private set; }
-        public PacketHeader(string Header)
+        public PacketHeader(string header)
         {
-            string[] HeaderParts = Header.Split(new string[] { ": " }, StringSplitOptions.None);
+            string[] HeaderParts = header.Split(new string[] { ": " }, StringSplitOptions.None);
             Name = HeaderParts[0];
             Value = HeaderParts[1];
         }

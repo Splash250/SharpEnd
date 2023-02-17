@@ -9,52 +9,52 @@ namespace SharpEnd.Packet
         public PacketHeaders Headers { get; set; }
         public string Body { get; set; }
 
-        public ResponsePacket(PacketProtocol Protocol, ResponseCode Code, PacketHeaders Headers)
+        public ResponsePacket(PacketProtocol protocol, ResponseCode code, PacketHeaders headers)
         {
-            this.Protocol = Protocol;
-            Status = new ResponseStatus(Code);
-            this.Headers = Headers;
+            Protocol = protocol;
+            Status = new ResponseStatus(code);
+            Headers = headers;
             Body = String.Empty;
         }
 
-        public ResponsePacket(PacketProtocol Protocol, ResponseCode Code, PacketHeaders Headers, string Body)
+        public ResponsePacket(PacketProtocol protocol, ResponseCode code, PacketHeaders headers, string body)
         {
-            this.Protocol = Protocol;
-            Status = new ResponseStatus(Code);
-            this.Headers = Headers;
-            this.Body = Body;
+            Protocol = protocol;
+            Status = new ResponseStatus(code);
+            Headers = headers;
+            Body = body;
         }
 
-        public ResponsePacket(PacketProtocol Protocol, ResponseCode Code, PacketHeaders Headers, View Body)
+        public ResponsePacket(PacketProtocol protocol, ResponseCode code, PacketHeaders headers, View body)
         {
-            this.Protocol = Protocol;
-            Status = new ResponseStatus(Code);
-            this.Headers = Headers;
-            this.Body = Body.Content;
+            Protocol = protocol;
+            Status = new ResponseStatus(code);
+            Headers = headers;
+            Body = body.Content;
         }
 
 
-        public ResponsePacket(ResponseCode Code, PacketHeaders Headers)
+        public ResponsePacket(ResponseCode code, PacketHeaders headers)
         {
             Protocol = PacketProtocol.Default;
-            Status = new ResponseStatus(Code);
-            this.Headers = Headers;
+            Status = new ResponseStatus(code);
+            Headers = headers;
             Body = String.Empty;
         }
 
-        public ResponsePacket(ResponseCode Code, PacketHeaders Headers, string Body)
+        public ResponsePacket(ResponseCode code, PacketHeaders headers, string body)
         {
             Protocol = PacketProtocol.Default;
-            Status = new ResponseStatus(Code);
-            this.Headers = Headers;
-            this.Body = Body;
+            Status = new ResponseStatus(code);
+            Headers = headers;
+            Body = body;
         }
-        public ResponsePacket(ResponseCode Code, PacketHeaders Headers, View Body)
+        public ResponsePacket(ResponseCode code, PacketHeaders headers, View body)
         {
             Protocol = PacketProtocol.Default;
-            Status = new ResponseStatus(Code);
-            this.Headers = Headers;
-            this.Body = Body.Content;
+            Status = new ResponseStatus(code);
+            Headers = headers;
+            Body = body.Content;
         }
 
 
@@ -68,10 +68,25 @@ namespace SharpEnd.Packet
             ParsePacket(packet);
 
         }
-
-        private void ParsePacket(string PacketText) 
+        public static ResponsePacket HTMLResponsePacket(string htmlContent) 
         {
-            string[] packetParts = PacketText.Split(Utility.DoubleNewLineDelimiters, StringSplitOptions.None);
+            return new ResponsePacket(
+             PacketProtocol.Default,
+             ResponseCode.OK,
+             new PacketHeaders(new string[] {
+                "Content-Type: text/html; charset=UTF-8",
+                "Content-Length: " + htmlContent.Length
+             }),
+             htmlContent);
+        }
+        public static ResponsePacket HTMLResponsePacket(View htmlView)
+        {
+            string content = htmlView.Content;
+            return HTMLResponsePacket(content);
+        }
+        private void ParsePacket(string packetText) 
+        {
+            string[] packetParts = packetText.Split(Utility.DoubleNewLineDelimiters, StringSplitOptions.None);
             string[] headerParts = packetParts[0].Split(Utility.NewLineDelimiters, StringSplitOptions.None);
             string[] protocolParts = headerParts[0].Split(new string[] { " " }, StringSplitOptions.None);
             ParseProtocol(protocolParts[0]);
@@ -80,25 +95,25 @@ namespace SharpEnd.Packet
             ParseBody(packetParts[1]);
         }
 
-        private void ParseProtocol(string ProtocolText) 
+        private void ParseProtocol(string protocolText) 
         {
-            Protocol = new PacketProtocol(ProtocolText);
+            Protocol = new PacketProtocol(protocolText);
         }
 
-        private void ParseStatus(string StatusText) 
+        private void ParseStatus(string statusText) 
         {
-            Status = new ResponseStatus((ResponseCode)Convert.ToInt32(StatusText));
+            Status = new ResponseStatus((ResponseCode)Convert.ToInt32(statusText));
         }
 
-        private void ParseHeaders(string[] HeaderParts) 
+        private void ParseHeaders(string[] headerParts) 
         {
-            string[] headersArray = HeaderParts.Skip(1).ToArray();
+            string[] headersArray = headerParts.Skip(1).ToArray();
             Headers = new PacketHeaders(headersArray);
         }
 
-        private void ParseBody(string BodyText) 
+        private void ParseBody(string bodyText) 
         {
-            Body = BodyText;
+            Body = bodyText;
         }
         //override ToString() to return the packet as a string
         public override string ToString()

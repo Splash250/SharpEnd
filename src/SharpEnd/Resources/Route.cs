@@ -8,9 +8,9 @@ namespace SharpEnd.Resources
         public RequestMethod RequestMethod { get; set; }
         public ControllerDelegate Controller { get; set; }
         public string Path { get; set; }
-        public Route(RequestMethod Method, string path, ControllerDelegate controller)
+        public Route(RequestMethod method, string path, ControllerDelegate controller)
         {
-            RequestMethod = Method;
+            RequestMethod = method;
             Path = path;
             Controller = controller;
         }

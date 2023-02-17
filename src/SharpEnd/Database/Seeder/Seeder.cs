@@ -2,15 +2,15 @@
 {
     public class Seeder
     {
-        private MySqlDataBaseConnection Connection;
-        public Seeder(MySqlDataBaseConnection Connection ) 
+        private MySqlDataBaseConnection _connection;
+        public Seeder(MySqlDataBaseConnection connection ) 
         {
-            this.Connection = Connection;
+            _connection = connection;
         }
 
-        public void Run(string TableName, Dictionary<string, string> Data)
+        public void Run(string tableName, Dictionary<string, string> data)
         {
-            MySqlActions.InsertData(Connection, TableName, Data);
+            MySqlActions.InsertData(_connection, tableName, data);
         }
 
     }

@@ -6,24 +6,24 @@ namespace SharpEnd
 {
     public class SharpEndWebServer
     {
-        private WebServer WebServer;
-        public SharpEndWebServer(string HTMLPath = "html")
+        private WebServer _webServer;
+        public SharpEndWebServer(string htmlPath = "html")
         {
-            WebServer = new WebServer(HTMLPath);
+            _webServer = new WebServer(htmlPath);
         }
-        public void Start(int Port, int Backlog)
+        public void Start(int port, int backlog)
         {
-            WebServer.Start(Port, Backlog);
+            _webServer.Start(port, backlog);
         }
 
-        public void Route(RequestMethod Method,string Path, Route.ControllerDelegate Controller)
+        public void Route(RequestMethod method,string path, Route.ControllerDelegate controller)
         { 
-            WebServer.AddRoute(Method, Path, Controller);
+            _webServer.AddRoute(method, path, controller);
         }
 
         public void Stop()
         {
-            WebServer.CloseServer();
+            _webServer.CloseServer();
         }
 
     }

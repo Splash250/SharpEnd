@@ -9,28 +9,28 @@ namespace SharpEnd.ORM
     internal class ObjectRelationMapper
     {
 
-        private MySqlDataBaseConnection connection;
-        private readonly string tableName;
-        private Type type;
+        private MySqlDataBaseConnection _connection;
+        private readonly string _tableName;
+        private Type _type;
 
         public ObjectRelationMapper(MySqlDataBaseConnection connection, string tableName)
         {
-            this.connection = connection;
-            this.tableName = tableName;
+            _connection = connection;
+            _tableName = tableName;
         }
 
         public Type GetType()
         {
-            if (type == null)
+            if (_type == null)
             {
-                type = CreateType();
+                _type = CreateType();
             }
-            return type;
+            return _type;
         }
 
         public MySqlConnection GetDbConnection()
         {
-            return connection.GetConnection();
+            return _connection.GetConnection();
         }
 
         private Type CreateType()
@@ -48,7 +48,7 @@ namespace SharpEnd.ORM
 
         private TypeBuilder GetTypeBuilder()
         {
-            string typeSignature = tableName + "Dynamic";
+            string typeSignature = _tableName + "Dynamic";
             AssemblyName assemblyName = new(typeSignature);
             AssemblyBuilder assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName,
                                                                                     AssemblyBuilderAccess.Run);
@@ -73,7 +73,6 @@ namespace SharpEnd.ORM
 
         private static void CreateProperty(TypeBuilder typeBuilder, string propertyName, Type propertyType)
         {
-            Console.WriteLine(propertyType.Name);
             FieldBuilder fieldBuilder = typeBuilder.DefineField("_" + propertyName,
                                                                 propertyType,
                                                                 FieldAttributes.Private);
@@ -115,7 +114,7 @@ namespace SharpEnd.ORM
             MySqlCommand command = connection.CreateCommand();
 
             command.CommandText = new MySqlQuery().Select("*")
-                                                  .From(tableName)
+                                                  .From(_tableName)
                                                   .Limit(1)
                                                   .ToString();
 

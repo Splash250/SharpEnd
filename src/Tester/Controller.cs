@@ -1,4 +1,5 @@
-﻿using SharpEnd.Packet;
+﻿using SharpEnd.Model;
+using SharpEnd.Packet;
 using SharpEnd.Resources;
 
 namespace Tester
@@ -31,14 +32,11 @@ namespace Tester
             //the second parameter is the response code 
             //the third one defines the headers that the response has
             //the fourth one is optional aswell. it can be either a view object or a string which represents the response body 
-            return new ResponsePacket(
-                PacketProtocol.Default,
-                ResponseCode.OK,
-                new PacketHeaders(new string[] {
-                    "Content-Type: text/html; charset=UTF-8",
-                    "Content-Length: " + view.Content.Length
-                }),
-                view);
+
+
+
+            return ResponsePacket.HTMLResponsePacket(view);
+
         }
 
         //the same implementation happens here
@@ -66,42 +64,38 @@ namespace Tester
         {
             DB DB = new();
             Test model = new(DB.Connection);
-            
+
+
+            if (requestPacket.Method == RequestMethod.POST)
+            {
+                Dictionary<string, string> Payload = RequestPacket.DictifyPayload(requestPacket.Payload);
+                if (Payload.TryGetValue("testname", out string testname))
+                    model.Instance.testName = testname;
+                if (Payload.TryGetValue("sucessful", out string sucessful))
+                    model.Instance.sucessful = sucessful;
+                if (Payload.TryGetValue("return", out string returnOutput))
+                    model.Instance.testReturnNumber = returnOutput;
+                model.SaveInstance();
+            }
+
+
+
+            View view = CreateDBPage(model);
+            return ResponsePacket.HTMLResponsePacket(view);
+        }
+        //here we create a table from all the data inside 'testtable' table
+        public static View CreateDBPage(Test fromModel) 
+        {
+
+            string pageData = ViewUtils.TableFromModelQuery(fromModel.GetColumns(),
+                                                            fromModel.All());
             View view = View.Create(
                 "other",
                 "db.html",
-                new string[] {
-                    $"pageData={CreatePageData(model)}"
+            new string[] {
+                    $"pageData={pageData}"
                 });
-            return new ResponsePacket(
-                ResponseCode.OK,
-                new PacketHeaders(new string[] {
-                    "Content-Type: text/html; charset=UTF-8",
-                    "Content-Length: " + view.Content.Length
-                }),
-                view);
-        }
-        //here we create a table from all the data inside 'testtable' table
-        public static string CreatePageData(Test fromModel) 
-        {
-            string pageData = "<table><tr>";
-            foreach (string header in fromModel.GetColumns())
-            {
-                pageData += $"<th>{header}</th>";
-            }
-            pageData += "</tr>";
-            foreach (dynamic item in fromModel.All())
-            {
-                pageData += $"<tr> " +
-                    $"<td>{item.testId}</td>" +
-                    $"<td>{item.testName}</td>" +
-                    $"<td>{item.sucessful}</td>" +
-                    $"<td>{item.testReturnNumber}</td>";
-                
-                pageData += "</tr>";
-            }
-            pageData += "</table>";
-            return pageData;
+            return view;
         }
     }
 }

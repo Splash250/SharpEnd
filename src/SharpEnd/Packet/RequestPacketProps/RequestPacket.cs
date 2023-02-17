@@ -11,16 +11,19 @@
         public RequestHost Host { get; private set; }
         public PacketHeaders Headers { get; private set; }
         public string Payload { get; private set; }
-        
+
         public bool HasPayload
         {
             get
             {
                 return !String.IsNullOrEmpty(Payload);
             }
-        } 
+        }
 
-
+        public static Dictionary<string, string> DictifyPayload(string payload) 
+        {
+            return Utility.ParseRequestPayload(payload);
+        }
         public RequestPacket(string packet)
         {
 

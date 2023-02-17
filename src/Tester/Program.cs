@@ -11,10 +11,10 @@ SharpEndWebServer app = new SharpEndWebServer("../../../../html");
 //first is the request method that the route refers to
 //second is the path that the user can interact with
 //third is the controller method that runs when the request is made to the specified path using the specified method
-app.Route(RequestMethod.POST, "/index", Controller.Index);
 app.Route(RequestMethod.GET, "/index", Controller.Index);
 app.Route(RequestMethod.GET, "/other", Controller.OtherPage);
 app.Route(RequestMethod.GET, "/db", Controller.DatabasePage);
+app.Route(RequestMethod.POST, "/db", Controller.DatabasePage);
 
 //here we start our app which starts the webserver on port 8080 and the backlog of 20
 app.Start(8080, 20);
@@ -43,6 +43,5 @@ test.Instance.testReturnNumber = 3;
 test.SaveInstance();
 
 //here we stop the webserver app
-app.Stop();
-
+Console.ReadLine();
 

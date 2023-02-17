@@ -14,22 +14,22 @@
             HeaderCollection = new();
         }
 
-        public PacketHeaders(string[] HeaderLines)
+        public PacketHeaders(string[] headerLines)
         {
             HeaderCollection = new();
-            foreach (string header in HeaderLines)
+            foreach (string header in headerLines)
             {
 
-                string[] HeaderParts = header.Split(new string[] { ": " }, StringSplitOptions.None);
-                if (HeaderParts.Length == 2)
+                string[] headerParts = header.Split(new string[] { ": " }, StringSplitOptions.None);
+                if (headerParts.Length == 2)
                 {
                     HeaderCollection.Add(new(header));
                 }
             }
         }
-        public void Remove(string HeaderName)
+        public void Remove(string headerName)
         {
-            HeaderCollection.RemoveAll(x => x.Name == HeaderName);
+            HeaderCollection.RemoveAll(x => x.Name == headerName);
         }
         public string TakeHeader(string headerName) 
         {

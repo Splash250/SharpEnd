@@ -16,17 +16,27 @@ namespace SharpEnd.Database
             {
                 if (_connection == null)
                 {
-                    _connection = new MySqlDataBaseConnection(Config);
+                    _connection = new MySqlDataBaseConnection(_getConfig);
                 }
                 return _connection;
             }
         }
-        private MySqlConfig Config 
+        private MySqlConfig _getConfig 
         {
             get 
             {
                 return new(Address, Port.ToString(), UserName, Password, DatabaseName);
             }
+        }
+        public void CreateSchema(Blueprint schemaBlueprint) 
+        {
+            Migration migration = new Migration(Connection);
+            migration.Create(schemaBlueprint);
+        }
+        public void InsertRow(string tableName,Dictionary<string, string> rowData)
+        {
+            Seeder seeder = new Seeder(Connection);
+            seeder.Run(tableName, rowData);
         }
     }
 }

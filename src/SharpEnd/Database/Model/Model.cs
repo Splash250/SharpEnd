@@ -29,10 +29,10 @@ namespace SharpEnd.Model
             }
         }
 
-        public Model(MySqlDataBaseConnection Connection)
+        public Model(MySqlDataBaseConnection connection)
         {
             TableName = string.Empty;
-            _connection = Connection;
+            _connection = connection;
             Instance = new ExpandoObject();
             _tableNameSet += (sender, args) =>
             {
@@ -41,12 +41,12 @@ namespace SharpEnd.Model
             };
         }
 
-        public IList? Query(MySqlQuery Query)
+        public IList? Query(MySqlQuery query)
         {
             IList Rows = ModelUtils.EmptyTypeList(_modelType);
             using MySqlConnection connection = _connection.GetConnection();
             connection.Open();
-            MySqlCommand command = BuildCommand(Query);
+            MySqlCommand command = BuildCommand(query);
             MySqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
@@ -86,41 +86,41 @@ namespace SharpEnd.Model
             return ModelUtils.GetPropertyStrings(_ORMObject);
         }
 
-        private MySqlCommand BuildCommand(MySqlQuery Query) 
+        private MySqlCommand BuildCommand(MySqlQuery query) 
         {
             MySqlCommand command = _connection.GetConnection().CreateCommand();
-            command.CommandText = Query.ToString();
+            command.CommandText = query.ToString();
             return command;
         }
-        public Model Where(string WhereClause)
+        public Model Where(string whereClause)
         {
-            _mySqlQuery.Where(WhereClause);
+            _mySqlQuery.Where(whereClause);
             return this;
         }
-        public Model GroupBy(string FieldName)
+        public Model GroupBy(string fieldName)
         {
-            _mySqlQuery.GroupBy(FieldName);
+            _mySqlQuery.GroupBy(fieldName);
             return this;
 
         }
-        public Model Having(string HavingClause)
+        public Model Having(string havingClause)
         {
-            _mySqlQuery.Having(HavingClause);
+            _mySqlQuery.Having(havingClause);
             return this;
         }
-        public Model OrderBy(string OrderClause)
+        public Model OrderBy(string orderClause)
         {
-            _mySqlQuery.OrderBy(OrderClause);
+            _mySqlQuery.OrderBy(orderClause);
             return this;
         }
-        public Model Take(int TakeNumber)
+        public Model Take(int takeNumber)
         {
-            _mySqlQuery.Limit(TakeNumber);
+            _mySqlQuery.Limit(takeNumber);
             return this;
         }
-        public Model Limit(int LimitNumber)
+        public Model Limit(int limitNumber)
         {
-            _mySqlQuery.Limit(LimitNumber);
+            _mySqlQuery.Limit(limitNumber);
             return this;
         }
         public IList? Get() 

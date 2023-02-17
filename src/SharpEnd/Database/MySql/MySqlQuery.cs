@@ -4,106 +4,106 @@ namespace SharpEnd.MySQL
 {
     public class MySqlQuery
     {
-        private string MySqlString;
+        private string _mySqlString;
 
         public MySqlQuery()
         {
-            MySqlString = "";
+            _mySqlString = "";
         }
         public MySqlQuery(string StarterQuery)
         {
-            MySqlString = StarterQuery;
+            _mySqlString = StarterQuery;
         }
-        public MySqlQuery InsertInto(string TableName, params string[] ColumnNames)
+        public MySqlQuery InsertInto(string tableName, params string[] columnNames)
         {
-            string joinedColumns = FormatArray(ColumnNames);
-            ProcessMySqlString("INSERT INTO", $"`{TableName}` ({joinedColumns})");
+            string joinedColumns = FormatArray(columnNames);
+            ProcessMySqlString("INSERT INTO", $"`{tableName}` ({joinedColumns})");
             return this;
         }
-        public MySqlQuery Values(params string[] Values)
+        public MySqlQuery Values(params string[] values)
         {
-            string joinedValues = FormatArray(Values, true);
+            string joinedValues = FormatArray(values, true);
             ProcessMySqlString("VALUES", $"({joinedValues})");
             return this;
         }
 
-        private static string FormatArray(string[] Array, bool IsValueString = false)
+        private static string FormatArray(string[] array, bool isValueString = false)
         {
-            string[] thisArray = new string[Array.Length];
+            string[] thisArray = new string[array.Length];
             for (int i = 0; i < thisArray.Length; i++)
             {
-                if (IsValueString)
-                    thisArray[i] = $"@{Array[i]}";
+                if (isValueString)
+                    thisArray[i] = $"@{array[i]}";
                 else
-                    thisArray[i] = $"`{Array[i]}`";
+                    thisArray[i] = $"`{array[i]}`";
             }
             return String.Join(", ", thisArray);
         }
 
-        public MySqlQuery Select(params string[] FieldNames)
+        public MySqlQuery Select(params string[] fieldNames)
         {
-            ProcessMySqlString("SELECT", String.Join(", ", FieldNames));
+            ProcessMySqlString("SELECT", String.Join(", ", fieldNames));
             return this;
         }
-        public MySqlQuery SelectDistinct(params string[] FieldNames)
+        public MySqlQuery SelectDistinct(params string[] fieldNames)
         {
-            ProcessMySqlString("SELECT DISTINCT", String.Join(", ", FieldNames));
+            ProcessMySqlString("SELECT DISTINCT", String.Join(", ", fieldNames));
             return this;
         }
-        public MySqlQuery From(params string[] TableNames)
+        public MySqlQuery From(params string[] tableNames)
         {
-            string joinedTables = FormatArray(TableNames);
+            string joinedTables = FormatArray(tableNames);
             ProcessMySqlString("FROM", joinedTables);
             return this;
         }
-        public MySqlQuery InnerJoin(string ForeignTableName)
+        public MySqlQuery InnerJoin(string foreignTableName)
         {
-            ProcessMySqlString("INNER JOIN", ForeignTableName);
+            ProcessMySqlString("INNER JOIN", foreignTableName);
             return this;
         }
-        public MySqlQuery On(string LocalFieldName, string ForeignFieldName)
+        public MySqlQuery On(string localFieldName, string foreignFieldName)
         {
-            ProcessMySqlString("ON", $"{LocalFieldName} = {ForeignFieldName}");
+            ProcessMySqlString("ON", $"{localFieldName} = {foreignFieldName}");
             return this;
         }
-        public MySqlQuery Where(string WhereClause)
+        public MySqlQuery Where(string whereClause)
         {
-            ProcessMySqlString("WHERE", WhereClause);
+            ProcessMySqlString("WHERE", whereClause);
             return this;
         }
-        public MySqlQuery GroupBy(string FieldName)
+        public MySqlQuery GroupBy(string fieldName)
         {
-            ProcessMySqlString("GROUP BY", FieldName);
+            ProcessMySqlString("GROUP BY", fieldName);
             return this;
         }
-        public MySqlQuery Having(string HavingClause)
+        public MySqlQuery Having(string havingClause)
         {
-            ProcessMySqlString("HAVING", HavingClause);
+            ProcessMySqlString("HAVING", havingClause);
             return this;
         }
-        public MySqlQuery OrderBy(string OrderClause)
+        public MySqlQuery OrderBy(string orderClause)
         {
-            ProcessMySqlString("ORDER BY", OrderClause);
+            ProcessMySqlString("ORDER BY", orderClause);
             return this;
         }
-        public MySqlQuery Take(int TakeNumber)
+        public MySqlQuery Take(int takeNumber)
         {
-            ProcessMySqlString("TAKE", TakeNumber.ToString());
+            ProcessMySqlString("TAKE", takeNumber.ToString());
 
             return this;
         }
-        public MySqlQuery Limit(int LimitNumber)
+        public MySqlQuery Limit(int limitNumber)
         {
-            ProcessMySqlString("LIMIT", LimitNumber.ToString());
+            ProcessMySqlString("LIMIT", limitNumber.ToString());
             return this;
         }
         private void ProcessMySqlString(string action, string clause)
         {
-            if (MySqlString.Length > 0)
+            if (_mySqlString.Length > 0)
             {
-                MySqlString += " ";
+                _mySqlString += " ";
             }
-            MySqlString += String.Join(" ", new string[2] { action, clause });
+            _mySqlString += String.Join(" ", new string[2] { action, clause });
         }
 
         public string Merge(MySqlQuery other) 
@@ -118,7 +118,7 @@ namespace SharpEnd.MySQL
         }
         public override string ToString()
         {
-            return MySqlString;
+            return _mySqlString;
         }
     }
 }

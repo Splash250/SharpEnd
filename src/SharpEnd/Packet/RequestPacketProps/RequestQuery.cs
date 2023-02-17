@@ -3,22 +3,22 @@
     public class RequestQuery
     {
         public Dictionary<string,string> Values { get; private set; }
-        public RequestQuery(string Query) 
+        public RequestQuery(string query) 
         {
             Values = new Dictionary<string, string>();
-            if (Query.Contains('&'))
+            if (query.Contains('&'))
             {
-                ReadQuery(Query);
+                ReadQuery(query);
             }
 
         }
-        private void ReadQuery(string Query)
+        private void ReadQuery(string query)
         {
-            string[] QueryParts = Query.Split(new string[] { "&" }, StringSplitOptions.None);
-            foreach (string QueryPart in QueryParts)
+            string[] queryParts = query.Split(new string[] { "&" }, StringSplitOptions.None);
+            foreach (string queryPart in queryParts)
             {
-                string[] QueryPartParts = QueryPart.Split(new string[] { "=" }, StringSplitOptions.None);
-                Values.Add(QueryPartParts[0], QueryPartParts[1]);
+                string[] queryPartParts = queryPart.Split(new string[] { "=" }, StringSplitOptions.None);
+                Values.Add(queryPartParts[0], queryPartParts[1]);
             }
         }
     }

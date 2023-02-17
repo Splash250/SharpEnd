@@ -22,10 +22,7 @@ namespace SharpEnd.Resources
 
         public static View Create(string name, string fileName, string[] variables)
         {
-            View view = new()
-            {
-                Name = name
-            };
+            View view = new() { Name = name };
             try
             {
                 string content = File.ReadAllText(WebServer.HTMLPath + "/" + fileName);
@@ -39,10 +36,7 @@ namespace SharpEnd.Resources
 
         public static View Create(string name, string fileName)
         {
-            View view = new()
-            {
-                Name = name
-            };
+            View view = new() { Name = name };
             try
             {
                 string content = File.ReadAllText(WebServer.HTMLPath + "/" + fileName);
@@ -52,6 +46,10 @@ namespace SharpEnd.Resources
 
 
             return view;
+        }
+        public override string ToString()
+        {
+            return Content;
         }
 
         private static string ParseContent(string content, string[] variables) 

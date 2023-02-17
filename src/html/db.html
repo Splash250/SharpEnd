@@ -1,2 +1,31 @@
-This is the data that you wanted:
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="mystyle.css">
+</head>
+<body>
+
+<h1>These are all the tests in the database:</h1> 
 {{pageData}}
+
+<h1>You can add a test here:</h1>
+<form action="/db" method="post">
+  <label for="testname">Test Name:</label><br>
+  <input type="text" id="testname" name="testname"><br>
+  <label for="sucessful">Was it sucessful? (0 = no 1 = yes):</label><br>
+  <input type="text" id="sucessful" name="sucessful"><br>
+  <label for="return">What was its return number?:</label><br>
+  <input type="text" id="return" name="return"><br>
+  <input type="submit" value="Submit">
+</form>
+
+</body>
+</html>
+
+
+
+
+
+
