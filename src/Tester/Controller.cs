@@ -65,7 +65,8 @@ namespace Tester
             DB DB = new();
             Test model = new(DB.Connection);
 
-
+            //todo: make a custom request class that can implement guards and easier handling to the payload's values
+            //also should make some extension methods to the request packet for example: Url() or Is() or RouteIs() or IsMethod() ect. to make things cleaner
             if (requestPacket.Method == RequestMethod.POST)
             {
                 Dictionary<string, string> Payload = RequestPacket.DictifyPayload(requestPacket.Payload);
