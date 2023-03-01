@@ -1,4 +1,7 @@
-﻿namespace SharpEnd.Packet
+﻿using System.Dynamic;
+using System.Security.Policy;
+
+namespace SharpEnd.Packet
 {
     public class RequestPacket
     {
@@ -10,19 +13,14 @@
         public PacketProtocol Protocol { get; private set; }
         public RequestHost Host { get; private set; }
         public PacketHeaders Headers { get; private set; }
-        public string Payload { get; private set; }
+        public ExpandoObject Payload { get; private set; }
 
         public bool HasPayload
         {
             get
             {
-                return !String.IsNullOrEmpty(Payload);
+                return !PayloadUtils.IsNullOrEmpty(Payload);
             }
-        }
-
-        public static Dictionary<string, string> DictifyPayload(string payload) 
-        {
-            return Utility.ParseRequestPayload(payload);
         }
         public RequestPacket(string packet)
         {
@@ -47,13 +45,42 @@
         private void ParsePayload(string packet) 
         {
             Payload = GetRequestPayload(packet);
+            AddPayloadMethods();
         }
+
+        private void AddPayloadMethods() 
+        {
+            AddHasMethod();
+            AddHasTheseMethod();
+        }
+        private void AddHasTheseMethod() 
+        {
+            Func<string[], bool> func = new(propertyNames =>
+            {
+                foreach (var propertyName in propertyNames)
+                    if (!((IDictionary<string, object>)Payload).ContainsKey(propertyName))
+                        return false;
+                return true;
+            });
+            AddMethodToPayload("HasThese", func);
+        }
+        private void AddHasMethod() 
+        {
+            Func<string, bool> func = new(propertyName => {
+                return ((IDictionary<string, object>)Payload).ContainsKey(propertyName);
+            });
+            AddMethodToPayload("Has", func);
+        }
+
         private void ParseHost(string hostString)
         {
             Host = new RequestHost(hostString);
         }
-
-        private void ParseHeaders(string[] headerLines)
+        private void AddMethodToPayload<T, TResult>(string methodName, Func<T, TResult> method)
+        {
+            ((IDictionary<string, object>)Payload)[methodName] = method;
+        }
+    private void ParseHeaders(string[] headerLines)
         {
             Headers = new PacketHeaders(ReadHeaders(headerLines));
         }
@@ -78,15 +105,21 @@
             }
         }
 
-        private static string GetRequestPayload(string wholePacket) 
+        private ExpandoObject GetRequestPayload(string wholePacket) 
         {
             string body = String.Empty;
             if (ContainsPayload(wholePacket)) 
             {
                 string[] packetParts = wholePacket.Split(Utility.DoubleNewLineDelimiters, 2, StringSplitOptions.None);
                 body = packetParts.Last();
+                return PayloadUtils.ToExpandoObject(body, GetContentType());
             }
-            return body;
+            return new ExpandoObject();
+        }
+        private string GetContentType()
+        {
+            //read the content type from the headers
+            return Headers.GetHeaderValue("Content-Type");
         }
         private static bool ContainsPayload(string wholePacket) 
         {

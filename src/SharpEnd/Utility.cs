@@ -40,21 +40,5 @@ namespace SharpEnd
         {
             return File.Exists(path);
         }
-        public static Dictionary<string, string> ParseRequestPayload(string payload)
-        {
-            Dictionary<string, string> data = new Dictionary<string, string>();
-            if (payload.Contains('&'))
-            {
-                string[] payloadParts = payload.Split(new string[] { "&" }, StringSplitOptions.None);
-                foreach (string payloadPart in payloadParts)
-                {
-                    string[] payloadPartParts = payloadPart.Split(new string[] { "=" }, StringSplitOptions.None);
-                    data.Add(payloadPartParts[0], payloadPartParts[1]);
-                }
-            }
-            return data;
-        }
-        
-
     }
 }

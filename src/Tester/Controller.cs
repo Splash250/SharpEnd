@@ -69,18 +69,13 @@ namespace Tester
             //also should make some extension methods to the request packet for example: Url() or Is() or RouteIs() or IsMethod() ect. to make things cleaner
             if (requestPacket.Method == RequestMethod.POST)
             {
-                Dictionary<string, string> Payload = RequestPacket.DictifyPayload(requestPacket.Payload);
-                if (Payload.TryGetValue("testname", out string testname))
-                    model.Instance.testName = testname;
-                if (Payload.TryGetValue("sucessful", out string sucessful))
-                    model.Instance.sucessful = sucessful;
-                if (Payload.TryGetValue("return", out string returnOutput))
-                    model.Instance.testReturnNumber = returnOutput;
+                dynamic Payload = requestPacket.Payload;
+                if (Payload.HasThese(new[] { "testname", "sucessful", "returnOutput" }))
+                    model.Instance.testName = Payload.testname;
+                    model.Instance.sucessful = Payload.sucessful;
+                    model.Instance.testReturnNumber = Payload.returnOutput;
                 model.SaveInstance();
             }
-
-
-
             View view = CreateDBPage(model);
             return ResponsePacket.HTMLResponsePacket(view);
         }
