@@ -7,9 +7,7 @@
         {
             Values = new Dictionary<string, string>();
             if (query.Contains('&'))
-            {
                 ReadQuery(query);
-            }
 
         }
         private void ReadQuery(string query)

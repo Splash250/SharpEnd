@@ -1,7 +1,7 @@
 ﻿using SharpEnd.Model;
 using SharpEnd.Packet;
 using SharpEnd.Resources;
-
+using SharpEnd.Cookies;
 namespace Tester
 {
     //Controller.cs
@@ -17,14 +17,21 @@ namespace Tester
             //first the name of the view
             //second is the file where the content of the view is located
             //third parameter is an optional parameter that if defined can replace variables (defined inside the html file like this: {{exampleVariable}} ) with custom dynamic content
+            int count = 0;
+            if (requestPacket.Cookies.Has("count"))
+            {
+                count = int.Parse(requestPacket.Cookies.GetCookie(requestPacket.Uri, "count").Value);
+            }
+            //string cookieValues = String.Join(", ", requestPacket.Cookies.GetCookies(requestPacket.Uri).Select(x => x.Value));
+            Console.WriteLine(count);
+
             View view = View.Create(
                 "index",
                 "index.html",
                 new string[] {
-                    "pathLocation=" + requestPacket.Path,
-                    "randomNum=" + new Random().Next(1000)
+                    "pathLocation=" + requestPacket.Headers["Content-Length"],
+                    "randomNum=" + count
                 });
-
             //every request has to have a response 
             //here we have to define the response object that is sent to the client after the method is called
             //the response packet has 4 parameters (some of it are optional)
@@ -32,10 +39,10 @@ namespace Tester
             //the second parameter is the response code 
             //the third one defines the headers that the response has
             //the fourth one is optional aswell. it can be either a view object or a string which represents the response body 
-
-
-
-            return ResponsePacket.HTMLResponsePacket(view);
+            ResponsePacket response = ResponsePacket.HTMLResponsePacket(view);
+            Cookie cookie = new Cookie("count", (++count).ToString());
+            response.SetCookie(cookie);
+            return response;
 
         }
 
@@ -51,7 +58,7 @@ namespace Tester
 
             return new ResponsePacket(
                 ResponseCode.OK,
-                new PacketHeaders(new string[] {
+                new PacketHeaderCollection(new string[] {
                     "Content-Type: text/html; charset=UTF-8",
                     "Content-Length: " + view.Content.Length
                 }),

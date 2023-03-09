@@ -69,9 +69,7 @@ namespace SharpEnd.Server
             try
             {
                 while (_isRunning)
-                {
                     await HandleClient(client);
-                }
             }
             catch (Exception)
             {
@@ -84,7 +82,6 @@ namespace SharpEnd.Server
             byte[] receivedBytes = await NetworkUtils.ReadAllBytesAsync(client);
             string data = Encoding.UTF8.GetString(receivedBytes, 0, receivedBytes.Length);
             RequestPacket requestPacket = new(data);
-
             if (NetworkUtils.IsFileRequest(requestPacket))
                 HandleFileResponse(client, requestPacket);
             else
@@ -94,16 +91,18 @@ namespace SharpEnd.Server
 
         private void HandleFileResponse(Socket client, RequestPacket packet)
         {
-            string path = HTMLPath + packet.Path;
+            string path = HTMLPath + packet.Uri.Path;
             int contentLength = File.ReadAllBytes(path).Length;
             ResponsePacket responsePacket = NetworkUtils.CraftFileSendHeaderPacket(contentLength);
             NetworkUtils.SendResponsePacketAsync(client, responsePacket);
             NetworkUtils.SendFileAsync(client, path);
         }
 
-        private void HandleNonFileResponse(Socket client, RequestPacket packet) 
+        private void HandleNonFileResponse(Socket client, RequestPacket packet)
         {
+
             ResponsePacket responsePacket = HandleRequest(packet);
+
             NetworkUtils.SendResponsePacketAsync(client, responsePacket);
         }
 
@@ -119,8 +118,9 @@ namespace SharpEnd.Server
 
         private ResponsePacket HandleRequest(RequestPacket requestPacket)
         {
+            Console.WriteLine("Cookies: " + requestPacket.Cookies.GetCookies(requestPacket.Uri).ToList().Count);
             ResponsePacket? responsePacket = null;
-            Route route = routes.GetRoute(requestPacket.Path, requestPacket.Method);
+            Route route = routes.GetRoute(requestPacket.Uri.Path, requestPacket.Method);
             if (route != null) 
             {
                 if (route.RequestMethod == requestPacket.Method)

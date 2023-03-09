@@ -1,5 +1,6 @@
-﻿using System.Dynamic;
-using System.Security.Policy;
+﻿using SharpEnd.Cookies;
+using SharpEnd.Miscellaneous;
+using System.Dynamic;
 
 namespace SharpEnd.Packet
 {
@@ -7,13 +8,25 @@ namespace SharpEnd.Packet
     {
 
         public RequestMethod Method { get; private set; }
-        public string Path { get; private set; }
         public RequestQuery Query { get; private set; }
         public string Fragment { get; private set; }
         public PacketProtocol Protocol { get; private set; }
-        public RequestHost Host { get; private set; }
-        public PacketHeaders Headers { get; private set; }
+        public PacketHeaderCollection Headers { get; private set; }
         public ExpandoObject Payload { get; private set; }
+        public CookieContainer Cookies { get; private set; }
+
+        private string _rawPacket;
+
+        private string _path;
+        private RequestHost _host;
+        public RequestUri Uri 
+        {
+            get 
+            {
+                return new RequestUri(_host, _path);
+            }
+        }
+
 
         public bool HasPayload
         {
@@ -27,12 +40,15 @@ namespace SharpEnd.Packet
 
             string[] lines = SplitPacket(packet);
             string[] requestLine = lines[0].Split(' ');
+            _rawPacket = packet;
             ParseMethod(requestLine[0]);
             ParseQueryAndPath(requestLine[1]);
             ParseProtocol(requestLine[2]);
             ParseHeaders(lines);
             ParseHost(Headers.TakeHeader("Host"));
+            ParseCookies();
             ParsePayload(packet);
+
         }
         private string[] SplitPacket(string packet) 
         {
@@ -45,6 +61,7 @@ namespace SharpEnd.Packet
         private void ParsePayload(string packet) 
         {
             Payload = GetRequestPayload(packet);
+
             AddPayloadMethods();
         }
 
@@ -71,18 +88,18 @@ namespace SharpEnd.Packet
             });
             AddMethodToPayload("Has", func);
         }
-
-        private void ParseHost(string hostString)
-        {
-            Host = new RequestHost(hostString);
-        }
         private void AddMethodToPayload<T, TResult>(string methodName, Func<T, TResult> method)
         {
             ((IDictionary<string, object>)Payload)[methodName] = method;
         }
-    private void ParseHeaders(string[] headerLines)
+        private void ParseHost(string hostString)
         {
-            Headers = new PacketHeaders(ReadHeaders(headerLines));
+            _host = new RequestHost(hostString);
+        }
+
+        private void ParseHeaders(string[] headerLines)
+        {
+            Headers = new PacketHeaderCollection(ReadHeaders(headerLines));
         }
 
         private void ParseProtocol(string protocol)
@@ -95,12 +112,12 @@ namespace SharpEnd.Packet
             if (path.Contains('?'))
             {
                 string[] pathParts = path.Split('?');
-                Path = pathParts[0];
+                _path = pathParts[0];
                 Query = new RequestQuery(pathParts[1]);
             }
             else
             {
-                Path = path;
+                _path = path;
                 Query = new RequestQuery(String.Empty);
             }
         }
@@ -123,7 +140,13 @@ namespace SharpEnd.Packet
         }
         private static bool ContainsPayload(string wholePacket) 
         {
-            return Utility.ContainsAny(wholePacket, Utility.DoubleNewLineDelimiters);
+            var sections = wholePacket.Split(Utility.DoubleNewLineDelimiters, StringSplitOptions.None);
+
+            if (sections.Length < 2)
+                return false;
+
+            var payload = sections[1].Trim();
+            return !string.IsNullOrEmpty(payload);
         }
         private string[] ReadHeaders(string[] rawPacketLines) 
         {
@@ -133,9 +156,16 @@ namespace SharpEnd.Packet
                 ).ToArray();
         }
 
+        private void ParseCookies()
+        {
+            string cookieHeader = Headers.TakeHeader("Cookie");
+            Console.WriteLine(cookieHeader);
+            Cookies = CookieContainer.Parse(cookieHeader, Uri);
+        }
+
         public override string ToString()
         {
-            throw new NotImplementedException();
+            return _rawPacket;
         }
     }   
 }

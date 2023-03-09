@@ -1,5 +1,4 @@
-﻿
-namespace SharpEnd
+﻿namespace SharpEnd.Miscellaneous
 {
     internal static class Utility
     {
@@ -25,7 +24,7 @@ namespace SharpEnd
 
             return false;
         }
-        public static string[] GetKeysFromDictionary(Dictionary<string, string> data) 
+        public static string[] GetKeysFromDictionary(Dictionary<string, string> data)
         {
             string[] keys = new string[data.Count];
             int i = 0;

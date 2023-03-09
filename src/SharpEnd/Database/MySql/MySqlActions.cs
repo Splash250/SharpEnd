@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using SharpEnd.Miscellaneous;
 
 namespace SharpEnd.MySQL
 {

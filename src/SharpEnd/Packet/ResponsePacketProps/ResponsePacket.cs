@@ -1,4 +1,6 @@
-﻿using SharpEnd.Resources;
+﻿using SharpEnd.Cookies;
+using SharpEnd.Miscellaneous;
+using SharpEnd.Resources;
 
 namespace SharpEnd.Packet
 {
@@ -6,10 +8,11 @@ namespace SharpEnd.Packet
     {
         public PacketProtocol Protocol { get; set; }
         public ResponseStatus Status { get; set; }
-        public PacketHeaders Headers { get; set; }
+        public PacketHeaderCollection Headers { get; set; }
+        public CookieContainer CookieContainer { get; set; }
         public string Body { get; set; }
 
-        public ResponsePacket(PacketProtocol protocol, ResponseCode code, PacketHeaders headers)
+        public ResponsePacket(PacketProtocol protocol, ResponseCode code, PacketHeaderCollection headers)
         {
             Protocol = protocol;
             Status = new ResponseStatus(code);
@@ -17,7 +20,7 @@ namespace SharpEnd.Packet
             Body = String.Empty;
         }
 
-        public ResponsePacket(PacketProtocol protocol, ResponseCode code, PacketHeaders headers, string body)
+        public ResponsePacket(PacketProtocol protocol, ResponseCode code, PacketHeaderCollection headers, string body)
         {
             Protocol = protocol;
             Status = new ResponseStatus(code);
@@ -25,7 +28,7 @@ namespace SharpEnd.Packet
             Body = body;
         }
 
-        public ResponsePacket(PacketProtocol protocol, ResponseCode code, PacketHeaders headers, View body)
+        public ResponsePacket(PacketProtocol protocol, ResponseCode code, PacketHeaderCollection headers, View body)
         {
             Protocol = protocol;
             Status = new ResponseStatus(code);
@@ -34,7 +37,7 @@ namespace SharpEnd.Packet
         }
 
 
-        public ResponsePacket(ResponseCode code, PacketHeaders headers)
+        public ResponsePacket(ResponseCode code, PacketHeaderCollection headers)
         {
             Protocol = PacketProtocol.Default;
             Status = new ResponseStatus(code);
@@ -42,14 +45,14 @@ namespace SharpEnd.Packet
             Body = String.Empty;
         }
 
-        public ResponsePacket(ResponseCode code, PacketHeaders headers, string body)
+        public ResponsePacket(ResponseCode code, PacketHeaderCollection headers, string body)
         {
             Protocol = PacketProtocol.Default;
             Status = new ResponseStatus(code);
             Headers = headers;
             Body = body;
         }
-        public ResponsePacket(ResponseCode code, PacketHeaders headers, View body)
+        public ResponsePacket(ResponseCode code, PacketHeaderCollection headers, View body)
         {
             Protocol = PacketProtocol.Default;
             Status = new ResponseStatus(code);
@@ -73,7 +76,7 @@ namespace SharpEnd.Packet
             return new ResponsePacket(
              PacketProtocol.Default,
              ResponseCode.OK,
-             new PacketHeaders(new string[] {
+             new PacketHeaderCollection(new string[] {
                 "Content-Type: text/html; charset=UTF-8",
                 "Content-Length: " + htmlContent.Length
              }),
@@ -95,6 +98,16 @@ namespace SharpEnd.Packet
             ParseBody(packetParts[1]);
         }
 
+        public void SetCookie(Cookie cookie) 
+        {
+            if (CookieContainer == null) 
+                CookieContainer = new CookieContainer();
+            CookieContainer.AddCookie(cookie);
+            if (Headers.Has("Set-Cookie"))
+                Headers["Set-Cookie"] += "; " + cookie.ToString();
+            else
+                Headers["Set-Cookie"] = cookie.ToString();
+        }
         private void ParseProtocol(string protocolText) 
         {
             Protocol = new PacketProtocol(protocolText);
@@ -108,7 +121,7 @@ namespace SharpEnd.Packet
         private void ParseHeaders(string[] headerParts) 
         {
             string[] headersArray = headerParts.Skip(1).ToArray();
-            Headers = new PacketHeaders(headersArray);
+            Headers = new PacketHeaderCollection(headersArray);
         }
 
         private void ParseBody(string bodyText) 

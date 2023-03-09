@@ -1,6 +1,5 @@
 ﻿namespace SharpEnd.Packet
 {
-
     public class ResponseStatus
     {
         public ResponseCode StatusObject { get; private set; }

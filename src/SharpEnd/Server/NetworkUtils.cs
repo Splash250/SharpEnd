@@ -1,4 +1,5 @@
-﻿using SharpEnd.Packet;
+﻿using SharpEnd.Miscellaneous;
+using SharpEnd.Packet;
 using System.Net.Sockets;
 using System.Text;
 
@@ -80,13 +81,13 @@ namespace SharpEnd.Server
 
         public static bool IsFileRequest(RequestPacket requestPacket)
         {
-            return Utility.IsFilePath(WebServer.HTMLPath + requestPacket.Path);
+            return Utility.IsFilePath(WebServer.HTMLPath + requestPacket.Uri.Path);
         }
         public static ResponsePacket CraftFileSendHeaderPacket(int contentLength) 
         {
             return new ResponsePacket(PacketProtocol.Default,
                                         ResponseCode.OK,
-                                        new PacketHeaders(new string[]
+                                        new PacketHeaderCollection(new string[]
                                         {
                                             "Content-Length: " + contentLength
                                         }), "");

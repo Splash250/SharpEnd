@@ -2,28 +2,35 @@
 {
     public class RequestHost
     {
-        public string Host { get; private set; }
+        public string Domain { get; private set; }
         public int Port { get; private set; }
-        public bool IsDNS { get; private set; }
+        public bool IsDNS 
+        { 
+            get 
+            {
+                return Domain.Any(c => char.IsLetter(c));
+            } 
+        }
         public RequestHost(string hostString) 
         {
             //if the string contains ':' split the host string by ':'
             if (hostString.Contains(':'))
             {
                 string[] hostParts = hostString.Split(':');
-                Host = hostParts[0];
+                Domain = hostParts[0];
                 Port = int.Parse(hostParts[1]);
             }
             else 
             {
-                Host = hostString;
+                Domain = hostString;
                 Port = 80;
-            } 
-
-            //check if the Host string contains alphabetic characters and set the IsDNS property accordingly
-            IsDNS = Host.Any(c => char.IsLetter(c));
+            }  
 
 
+        }
+        public override string ToString()
+        {
+            return Domain + ":" + Port;
         }
     }
 }
