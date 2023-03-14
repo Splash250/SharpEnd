@@ -1,14 +1,15 @@
-﻿using System.Text;
+﻿using SharpEnd.Miscellaneous;
+using System.Text;
 
 namespace SharpEnd.Packet
 {
     public class PacketHeaderCollection
     {
-        private readonly Dictionary<string, PacketHeader> _headerDict;
+        private readonly MultiDictionary<string, PacketHeader> _headerDict;
 
         public PacketHeaderCollection()
         {
-            _headerDict = new Dictionary<string, PacketHeader>();
+            _headerDict = new MultiDictionary<string, PacketHeader>();
         }
 
         public PacketHeaderCollection(string[] headerLines) : this()
@@ -54,16 +55,20 @@ namespace SharpEnd.Packet
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            foreach (PacketHeader header in _headerDict.Values)
+            foreach (List<PacketHeader> headerValues in _headerDict.Values)
             {
-                sb.Append(header.ToString());
-                sb.Append("\r\n");
+                foreach (PacketHeader item in headerValues)
+                {
+                    sb.Append(item.ToString());
+                    sb.Append("\r\n");
+                }
+
             }
             return sb.ToString();
         }
         public bool Has(string headerName)
         {
-            return _headerDict.ContainsKey(headerName);
+            return _headerDict.Has(headerName);
         }
 
         public string this[string headerName]

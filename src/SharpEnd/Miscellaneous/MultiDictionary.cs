@@ -37,12 +37,12 @@
             _dictionary[key].Add(value);
         }
 
-        public bool ContainsKey(TKey key)
+        public bool Has(TKey key)
         {
             return _dictionary.ContainsKey(key);
         }
 
-        public bool ContainsValue(TValue value)
+        public bool HasValue(TValue value)
         {
             foreach (var list in _dictionary.Values)
             {

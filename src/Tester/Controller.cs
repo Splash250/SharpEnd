@@ -2,6 +2,8 @@
 using SharpEnd.Packet;
 using SharpEnd.Resources;
 using SharpEnd.Cookies;
+using System;
+
 namespace Tester
 {
     //Controller.cs
@@ -23,14 +25,19 @@ namespace Tester
                 count = int.Parse(requestPacket.Cookies.GetCookie(requestPacket.Uri, "count").Value);
             }
             //string cookieValues = String.Join(", ", requestPacket.Cookies.GetCookies(requestPacket.Uri).Select(x => x.Value));
-            Console.WriteLine(count);
 
+            int rand = 0;
+            if (requestPacket.Cookies.Has("random"))
+            {
+                rand = int.Parse(requestPacket.Cookies.GetCookie(requestPacket.Uri, "random").Value);
+            }
             View view = View.Create(
                 "index",
                 "index.html",
                 new string[] {
-                    "pathLocation=" + requestPacket.Headers["Content-Length"],
-                    "randomNum=" + count
+                    "pathLocation=" + requestPacket.Uri.Path,
+                    "randomNum=" + rand,
+                    "cookieCount=" + count,
                 });
             //every request has to have a response 
             //here we have to define the response object that is sent to the client after the method is called
@@ -42,6 +49,9 @@ namespace Tester
             ResponsePacket response = ResponsePacket.HTMLResponsePacket(view);
             Cookie cookie = new Cookie("count", (++count).ToString());
             response.SetCookie(cookie);
+            cookie = new Cookie("random", new Random().Next(1000).ToString());
+            response.SetCookie(cookie);
+
             return response;
 
         }
