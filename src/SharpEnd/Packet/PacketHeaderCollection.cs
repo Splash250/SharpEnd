@@ -25,25 +25,35 @@ namespace SharpEnd.Packet
         public void AddHeader(string name, string value)
         {
             PacketHeader header = new PacketHeader(name, value);
-            _headerDict[name] = header;
+            _headerDict.Add(name, header);
         }
 
         public void Remove(string headerName)
         {
-            _headerDict.Remove(headerName);
+            _headerDict.RemoveKey(headerName);
         }
 
         public string TakeHeader(string headerName)
         {
             if (_headerDict.TryGetValue(headerName, out PacketHeader header))
             {
-                _headerDict.Remove(headerName);
+                _headerDict.RemoveKey(headerName);
                 return header.Value;
             }
             else
-                return null;
+                return String.Empty;
         }
-
+        public List<string> TakeHeaderValues (string headerName)
+        {
+            List<string> values = new List<string>();
+            if (_headerDict.TryGetValues(headerName, out List<PacketHeader> headers))
+            {
+                foreach (PacketHeader header in headers)
+                    values.Add(header.Value);
+                _headerDict.RemoveKey(headerName);
+            }
+            return values;
+        }
         public string? GetHeaderValue(string headerName)
         {
             if (_headerDict.TryGetValue(headerName, out PacketHeader header))
@@ -51,7 +61,14 @@ namespace SharpEnd.Packet
             else
                 return null;
         }
-
+        public List<string> GetHeaderValues(string headerName)
+        {
+            List<string> values = new List<string>();
+            if (_headerDict.TryGetValues(headerName, out List<PacketHeader> headers))
+                foreach (PacketHeader header in headers)
+                    values.Add(header.Value);
+            return values;
+        }
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
@@ -83,7 +100,7 @@ namespace SharpEnd.Packet
             set
             {
                 if (value == null)
-                    _headerDict.Remove(headerName);
+                    _headerDict.RemoveKey(headerName);
                 else
                     AddHeader(headerName, value);
             }

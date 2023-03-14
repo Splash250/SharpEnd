@@ -52,7 +52,35 @@
 
             return false;
         }
+        public TValue GetValue(TKey key, int index = 0)
+        {
+            if (_dictionary.TryGetValue(key, out List<TValue> values))
+                return values[index];
 
+            return default(TValue);
+        }
+        public List<TValue> GetValues(TKey key)
+        {
+            if (_dictionary.TryGetValue(key, out List<TValue> values))
+                return values;
+
+            return new List<TValue>();
+        }
+        public bool TryGetValues(TKey key, out List<TValue> values)
+        {
+            return _dictionary.TryGetValue(key, out values);
+        }
+        public bool TryGetValue(TKey key, out TValue value, int index = 0)
+        {
+            if (_dictionary.TryGetValue(key, out List<TValue> values))
+            {
+                value = values[index];
+                return true;
+            }
+
+            value = default(TValue);
+            return false;
+        }
         public List<TValue> this[TKey key]
         {
             get

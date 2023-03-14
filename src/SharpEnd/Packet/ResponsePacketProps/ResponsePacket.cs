@@ -103,10 +103,13 @@ namespace SharpEnd.Packet
             if (CookieContainer == null) 
                 CookieContainer = new CookieContainer();
             CookieContainer.AddCookie(cookie);
-            if (Headers.Has("Set-Cookie"))
-                Headers["Set-Cookie"] += "; " + cookie.ToString();
-            else
-                Headers["Set-Cookie"] = cookie.ToString();
+            Headers.AddHeader("Set-Cookie", cookie.ToString());
+        }
+        public void ApplySession(Session session)
+        {
+            if (session != null)
+                foreach (Cookie cookie in session.Cookies)
+                    SetCookie(cookie);
         }
         private void ParseProtocol(string protocolText) 
         {

@@ -19,18 +19,19 @@ namespace Tester
             //first the name of the view
             //second is the file where the content of the view is located
             //third parameter is an optional parameter that if defined can replace variables (defined inside the html file like this: {{exampleVariable}} ) with custom dynamic content
+            Session sess = Session.Start(requestPacket);
+
+            
             int count = 0;
-            if (requestPacket.Cookies.Has("count"))
-            {
-                count = int.Parse(requestPacket.Cookies.GetCookie(requestPacket.Uri, "count").Value);
-            }
+            if (sess.IsSet("count"))
+                count = int.Parse(sess["count"]);
+
             //string cookieValues = String.Join(", ", requestPacket.Cookies.GetCookies(requestPacket.Uri).Select(x => x.Value));
 
             int rand = 0;
-            if (requestPacket.Cookies.Has("random"))
-            {
-                rand = int.Parse(requestPacket.Cookies.GetCookie(requestPacket.Uri, "random").Value);
-            }
+            if (sess.IsSet("random"))
+                rand = int.Parse(sess["random"]);
+
             View view = View.Create(
                 "index",
                 "index.html",
@@ -47,9 +48,9 @@ namespace Tester
             //the third one defines the headers that the response has
             //the fourth one is optional aswell. it can be either a view object or a string which represents the response body 
             ResponsePacket response = ResponsePacket.HTMLResponsePacket(view);
-            Cookie cookie = new Cookie("count", (++count).ToString());
+            Cookie cookie = new Cookie("count", (++count).ToString(), requestPacket.Uri.Path, requestPacket.Uri.Host.Domain);
             response.SetCookie(cookie);
-            cookie = new Cookie("random", new Random().Next(1000).ToString());
+            cookie = new Cookie("random", new Random().Next(1000).ToString(), requestPacket.Uri.Path, requestPacket.Uri.Host.Domain);
             response.SetCookie(cookie);
 
             return response;

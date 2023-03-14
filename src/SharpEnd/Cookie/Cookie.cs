@@ -20,7 +20,7 @@ namespace SharpEnd.Cookies
             Value = string.Empty;
             Path = string.Empty;
             Domain = string.Empty;
-            Expires = DateTime.MinValue;
+            Expires = GenerateDefaultEpiration();
             Secure = false;
             HttpOnly = false;
         }
@@ -30,7 +30,7 @@ namespace SharpEnd.Cookies
             Value = value;
             Path = string.Empty;
             Domain = string.Empty;
-            Expires = DateTime.MinValue;
+            Expires = GenerateDefaultEpiration();
             Secure = false;
             HttpOnly = false;
         }
@@ -41,7 +41,7 @@ namespace SharpEnd.Cookies
             Value = value;
             Path = path;
             Domain = string.Empty;
-            Expires = DateTime.MinValue;
+            Expires = GenerateDefaultEpiration();
             Secure = false;
             HttpOnly = false;
         }
@@ -52,7 +52,17 @@ namespace SharpEnd.Cookies
             Value = value;
             Path = path;
             Domain = domain;
-            Expires = DateTime.MinValue;
+            Expires = GenerateDefaultEpiration();
+            Secure = false;
+            HttpOnly = false;
+        }
+        public Cookie(string name, string value, string path, string domain, DateTime expires)
+        {
+            Name = name;
+            Value = value;
+            Path = path;
+            Domain = domain;
+            Expires = expires;
             Secure = false;
             HttpOnly = false;
         }
@@ -114,6 +124,11 @@ namespace SharpEnd.Cookies
             if (HttpOnly)
                 sb.Append("; HttpOnly");
             return sb.ToString();
+        }
+        private static DateTime GenerateDefaultEpiration() 
+        {
+            DateTime dateTimeIn30Minutes = DateTime.Now.AddMinutes(30);
+            return dateTimeIn30Minutes;
         }
     }
 }

@@ -1,8 +1,9 @@
 ﻿using SharpEnd.Packet;
+using System.Collections;
 
 namespace SharpEnd.Cookies
 {
-    public class CookieContainer
+    public class CookieContainer : IEnumerable<Cookie>
     {
         private Dictionary<string, Cookie> _cookies;
         public static CookieContainer Empty
@@ -91,46 +92,19 @@ namespace SharpEnd.Cookies
                 };
                 AddCookie(cookie);
             }
-        }/*
-        public override string ToString(bool setCookie=false)
+        }
+
+        public IEnumerator<Cookie> GetEnumerator()
         {
-            var cookieStrings = _cookies.Values
-                .Where(cookie => !cookie.Expired)
-                .Select(cookie =>
-                {
-                    var sb = new StringBuilder();
+            foreach (Cookie cookie in _cookies.Values)
+            {
+                yield return cookie;
+            }
+        }
 
-                    if (setCookie)
-                    {
-                        sb.Append($"{cookie.Name}={cookie.Value}");
-
-                        if (!string.IsNullOrEmpty(cookie.Domain))
-                            sb.Append($"; Domain={cookie.Domain}");
-
-                        if (!string.IsNullOrEmpty(cookie.Path))
-                            sb.Append($"; Path={cookie.Path}");
-
-                        if (cookie.Expires != DateTime.MinValue)
-                            sb.Append($"; Expires={cookie.Expires:R}");
-
-                        if (cookie.Secure)
-                            sb.Append("; Secure");
-
-                        if (cookie.HttpOnly)
-                            sb.Append("; HttpOnly");
-
-                        if (!string.IsNullOrEmpty(cookie.SameSite))
-                            sb.Append($"; SameSite={cookie.SameSite}");
-                    }
-                    else
-                    {
-                        sb.Append($"{cookie.Name}={cookie.Value}");
-                    }
-
-                    return sb.ToString();
-                });
-
-            return string.Join("; ", cookieStrings);
-        }*/
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
     }
 }
