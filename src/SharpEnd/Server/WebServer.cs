@@ -125,21 +125,22 @@ namespace SharpEnd.Server
             {
                 if (route.RequestMethod == requestPacket.Method)
                 {
-                    responsePacket = route.Controller(requestPacket);
+                    responsePacket = HandleRoute(route, requestPacket).Result;
                     return responsePacket;
                 }
                 else
-                {
                     //todo: custom error page support in .htaccess file
                     responsePacket = DefaultResponsePackets.MethodNotAllowed;
-                }
             }
             else
-            {
                 //todo: custom error page support in .htaccess file
                 responsePacket = DefaultResponsePackets.NotFoundPacket;
-            }
             return responsePacket;
+        }
+        //make an async method that runs a route's controller this method should return a response packet
+        private async Task<ResponsePacket> HandleRoute(Route route, RequestPacket requestPacket)
+        {
+            return await Task.Run(() => route.Controller(requestPacket));
         }
 
         public void CloseServer()

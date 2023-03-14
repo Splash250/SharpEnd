@@ -39,8 +39,8 @@ namespace SharpEnd.Cookies
             string key = name;
             if (_cookies.TryGetValue(key, out Cookie cookie))
             {
-                //if (ValidCookie(cookie, uri))
-                return cookie;
+                if (ValidCookie(cookie, uri))
+                    return cookie;
             }
             return new Cookie();
         }

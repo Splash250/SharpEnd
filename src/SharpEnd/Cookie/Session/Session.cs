@@ -42,7 +42,7 @@ namespace SharpEnd.Cookies
 
                     _cookies.GetCookie(_uri, key).Value = value;
                 else
-                    _cookies.AddCookie(new Cookie(key, value));
+                    _cookies.AddCookie(new Cookie(key, value, _uri.Path));
             }
         }
 

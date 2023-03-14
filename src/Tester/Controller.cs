@@ -3,6 +3,7 @@ using SharpEnd.Packet;
 using SharpEnd.Resources;
 using SharpEnd.Cookies;
 using System;
+using MyConsoleApp;
 
 namespace Tester
 {
@@ -26,8 +27,6 @@ namespace Tester
             if (sess.IsSet("count"))
                 count = int.Parse(sess["count"]);
 
-            //string cookieValues = String.Join(", ", requestPacket.Cookies.GetCookies(requestPacket.Uri).Select(x => x.Value));
-
             int rand = 0;
             if (sess.IsSet("random"))
                 rand = int.Parse(sess["random"]);
@@ -48,10 +47,10 @@ namespace Tester
             //the third one defines the headers that the response has
             //the fourth one is optional aswell. it can be either a view object or a string which represents the response body 
             ResponsePacket response = ResponsePacket.HTMLResponsePacket(view);
-            Cookie cookie = new Cookie("count", (++count).ToString(), requestPacket.Uri.Path, requestPacket.Uri.Host.Domain);
-            response.SetCookie(cookie);
-            cookie = new Cookie("random", new Random().Next(1000).ToString(), requestPacket.Uri.Path, requestPacket.Uri.Host.Domain);
-            response.SetCookie(cookie);
+
+            sess["count"] = (++count).ToString();
+            sess["random"] = new Random().Next(1000).ToString();
+            response.ApplySession(sess);
 
             return response;
 
@@ -80,8 +79,7 @@ namespace Tester
         //everything else is the same as above
         public static ResponsePacket DatabasePage(RequestPacket requestPacket)
         {
-            DB DB = new();
-            Test model = new(DB.Connection);
+            Test model = new(Program.dataBase.Connection);
 
             //todo: make a custom request class that can implement guards and easier handling to the payload's values
             //also should make some extension methods to the request packet for example: Url() or Is() or RouteIs() or IsMethod() ect. to make things cleaner
