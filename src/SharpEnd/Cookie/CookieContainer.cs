@@ -13,7 +13,13 @@ namespace SharpEnd.Cookies
                 return new CookieContainer();
             }
         }
-
+        public int Count
+        {
+            get
+            {
+                return _cookies.Count;
+            }
+        }
         public CookieContainer()
         {
             _cookies = new Dictionary<string, Cookie>();
@@ -39,8 +45,8 @@ namespace SharpEnd.Cookies
             string key = name;
             if (_cookies.TryGetValue(key, out Cookie cookie))
             {
-                if (ValidCookie(cookie, uri))
-                    return cookie;
+                //if (ValidCookie(cookie, uri))
+                return cookie;
             }
             return new Cookie();
         }

@@ -108,7 +108,7 @@ namespace SharpEnd.Packet
         public void ApplySession(Session session)
         {
             if (session != null)
-                foreach (Cookie cookie in session.Cookies)
+                foreach (Cookie cookie in session.ModifiedCookies)
                     SetCookie(cookie);
         }
         private void ParseProtocol(string protocolText) 

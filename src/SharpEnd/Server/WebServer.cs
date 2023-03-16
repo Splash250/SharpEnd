@@ -118,7 +118,6 @@ namespace SharpEnd.Server
 
         private ResponsePacket HandleRequest(RequestPacket requestPacket)
         {
-            Console.WriteLine("Cookies: " + requestPacket.Cookies.GetCookies(requestPacket.Uri).ToList().Count);
             ResponsePacket? responsePacket = null;
             Route route = routes.GetRoute(requestPacket.Uri.Path, requestPacket.Method);
             if (route != null) 

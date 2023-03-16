@@ -22,7 +22,6 @@ namespace Tester
             //third parameter is an optional parameter that if defined can replace variables (defined inside the html file like this: {{exampleVariable}} ) with custom dynamic content
             Session sess = Session.Start(requestPacket);
 
-            
             int count = 0;
             if (sess.IsSet("count"))
                 count = int.Parse(sess["count"]);
@@ -39,6 +38,7 @@ namespace Tester
                     "randomNum=" + rand,
                     "cookieCount=" + count,
                 });
+
             //every request has to have a response 
             //here we have to define the response object that is sent to the client after the method is called
             //the response packet has 4 parameters (some of it are optional)
@@ -50,8 +50,8 @@ namespace Tester
 
             sess["count"] = (++count).ToString();
             sess["random"] = new Random().Next(1000).ToString();
-            response.ApplySession(sess);
 
+            response.ApplySession(sess);
             return response;
 
         }

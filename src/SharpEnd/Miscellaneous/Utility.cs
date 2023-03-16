@@ -35,6 +35,13 @@
             }
             return keys;
         }
+        public static string GenerateSessionId(int length = 32)
+        {
+            const string chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+            Random random = new Random();
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
         public static bool IsFilePath(string path)
         {
             return File.Exists(path);
