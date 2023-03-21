@@ -31,7 +31,6 @@ namespace Tester
                 rand = int.Parse(sess["random"]);
 
             View view = View.Create(
-                "index",
                 "index.html",
                 new string[] {
                     "pathLocation=" + requestPacket.Uri.Path,
@@ -60,7 +59,6 @@ namespace Tester
         public static ResponsePacket OtherPage(RequestPacket requestPacket)
         {
             View view = View.Create(
-                "other",
                 "other.html",
                 new string[] {
                     "currentDate=" + DateTime.UtcNow.Date.ToString("dd/MM/yyyy"),
@@ -95,6 +93,12 @@ namespace Tester
             View view = CreateDBPage(model);
             return ResponsePacket.HTMLResponsePacket(view);
         }
+        public static ResponsePacket ClearDatabase(RequestPacket requestPacket) 
+        {
+            Test model = new(Program.dataBase.Connection);
+            model.Where("`testReturnNumber` = 0").Delete();
+            return DatabasePage(requestPacket);
+        }
         //here we create a table from all the data inside 'testtable' table
         public static View CreateDBPage(Test fromModel) 
         {
@@ -102,7 +106,6 @@ namespace Tester
             string pageData = ViewUtils.TableFromModelQuery(fromModel.GetColumns(),
                                                             fromModel.All());
             View view = View.Create(
-                "other",
                 "db.html",
             new string[] {
                     $"pageData={pageData}"

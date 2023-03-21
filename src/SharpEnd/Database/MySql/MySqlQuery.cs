@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using Org.BouncyCastle.Bcpg;
 
 namespace SharpEnd.MySQL
 {
@@ -13,6 +14,19 @@ namespace SharpEnd.MySQL
         public MySqlQuery(string StarterQuery)
         {
             _mySqlString = StarterQuery;
+        }
+        internal string TrimAnchor() 
+        {
+            //remove the select and from anchors from the front of the query
+            //if they exist
+            string trimmed = _mySqlString;
+            if (trimmed.StartsWith("SELECT"))
+                //remove characters to the second occurance of space
+                trimmed = trimmed.Remove(0, trimmed.IndexOf(' ', trimmed.IndexOf(' ') + 1));
+            if (trimmed.StartsWith("FROM"))
+                //remove characters to the second occurance of space
+                trimmed = trimmed.Remove(0, trimmed.IndexOf(' ', trimmed.IndexOf(' ') + 1));
+            return trimmed;
         }
         public MySqlQuery InsertInto(string tableName, params string[] columnNames)
         {

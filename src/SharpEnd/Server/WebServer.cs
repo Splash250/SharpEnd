@@ -12,7 +12,7 @@ namespace SharpEnd.Server
         private Socket _serverSocket;
         private bool _isRunning;
         public static string HTMLPath { get; private set; } = "html";
-        public RouteCollection routes;
+        public RouteCollection Routes { get; private set; }
         public WebServer(string htmlPath)
         {
             SetDefaults();
@@ -30,7 +30,7 @@ namespace SharpEnd.Server
                 ProtocolType.Tcp);
             _clients = new List<Socket>();
             _isRunning = true;
-            routes = new RouteCollection();
+            Routes = new RouteCollection();
 
         }
         public void Start(int port, int backlog)
@@ -108,7 +108,7 @@ namespace SharpEnd.Server
 
         public void AddRoute(RequestMethod method, string path, Route.ControllerDelegate controller)
         {
-            routes.Add(method, path, controller);
+            Routes.Add(method, path, controller);
         }
         private void DisconnectClient(Socket client)
         {
@@ -119,7 +119,7 @@ namespace SharpEnd.Server
         private ResponsePacket HandleRequest(RequestPacket requestPacket)
         {
             ResponsePacket? responsePacket = null;
-            Route route = routes.GetRoute(requestPacket.Uri.Path, requestPacket.Method);
+            Route route = Routes.GetRoute(requestPacket.Uri.Path, requestPacket.Method);
             if (route != null) 
             {
                 if (route.RequestMethod == requestPacket.Method)

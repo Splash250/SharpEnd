@@ -128,6 +128,24 @@ namespace SharpEnd.Model
             _mySqlQuery = _newMySqlQuery;
             return Query(_mySqlQuery);
         }
+        public void Delete()
+        {
+            RunCommand($"DELETE {_mySqlQuery.TrimAnchor()}");
+        }
+        public void DeleteAll()
+        {
+            RunCommand($"DELETE FROM {_tableName}");
+        }
+        private void RunCommand(string commandText) 
+        {
+            Console.WriteLine(commandText);
+            using MySqlConnection connection = _connection.GetConnection();
+            connection.Open();
+            MySqlCommand command = connection.CreateCommand();
+            command.CommandText = commandText;
+            command.ExecuteNonQuery();
+
+        }
         public override string ToString()
         {
             return TableName;

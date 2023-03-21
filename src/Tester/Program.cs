@@ -30,6 +30,7 @@ namespace MyConsoleApp
             app.Route(RequestMethod.GET, "/index", Controller.Index);
             app.Route(RequestMethod.GET, "/other", Controller.OtherPage);
             app.Route(RequestMethod.GET, "/db", Controller.DatabasePage);
+            app.Route(RequestMethod.GET, "/cleardb", Controller.ClearDatabase);
             app.Route(RequestMethod.POST, "/db", Controller.DatabasePage);
 
             //here we start our app which starts the webserver on port 8080 and the backlog of 20

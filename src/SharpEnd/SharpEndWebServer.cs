@@ -25,6 +25,9 @@ namespace SharpEnd
         {
             _webServer.CloseServer();
         }
-
+        public RouteCollection Routes
+        {
+            get { return _webServer.Routes; }
+        }
     }
 }
