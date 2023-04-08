@@ -1,9 +1,6 @@
-﻿using SharpEnd.Model;
-using SharpEnd.Packet;
+﻿using SharpEnd.Packet;
 using SharpEnd.Resources;
 using SharpEnd.Cookies;
-using System;
-using MyConsoleApp;
 
 namespace Tester
 {
@@ -81,6 +78,12 @@ namespace Tester
 
             //todo: make a custom request class that can implement guards and easier handling to the payload's values
             //also should make some extension methods to the request packet for example: Url() or Is() or RouteIs() or IsMethod() ect. to make things cleaner
+
+            if (requestPacket.Uri.Query.Has("buzi"))
+            {
+                Console.WriteLine("van buzi");
+            }
+            
             if (requestPacket.Method == RequestMethod.POST)
             {
                 dynamic Payload = requestPacket.Payload;
@@ -96,7 +99,7 @@ namespace Tester
         public static ResponsePacket ClearDatabase(RequestPacket requestPacket) 
         {
             Test model = new(Program.dataBase.Connection);
-            model.Where("`testReturnNumber` = 0").Delete();
+            model.DeleteAll();
             return DatabasePage(requestPacket);
         }
         //here we create a table from all the data inside 'testtable' table

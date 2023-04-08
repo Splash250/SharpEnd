@@ -1,5 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
-using SharpEnd.Miscellaneous;
+using SharpEnd.Utils;
 
 namespace SharpEnd.MySQL
 {
@@ -28,7 +28,7 @@ namespace SharpEnd.MySQL
             connection.OpenConnection();
             MySqlQuery mySQLQuery = new();
             
-            string[] keys = Utility.GetKeysFromDictionary(data);
+            string[] keys = BasicUtility.GetKeysFromDictionary(data);
             mySQLQuery.InsertInto(tableName, keys).Values(keys);
             string sqlActionString = mySQLQuery.ToString();
 

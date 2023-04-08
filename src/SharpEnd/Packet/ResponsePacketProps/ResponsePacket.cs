@@ -1,6 +1,6 @@
 ﻿using SharpEnd.Cookies;
-using SharpEnd.Miscellaneous;
 using SharpEnd.Resources;
+using SharpEnd.Utils;
 
 namespace SharpEnd.Packet
 {
@@ -89,8 +89,8 @@ namespace SharpEnd.Packet
         }
         private void ParsePacket(string packetText) 
         {
-            string[] packetParts = packetText.Split(Utility.DoubleNewLineDelimiters, StringSplitOptions.None);
-            string[] headerParts = packetParts[0].Split(Utility.NewLineDelimiters, StringSplitOptions.None);
+            string[] packetParts = packetText.Split(BasicUtility.DoubleNewLineDelimiters, StringSplitOptions.None);
+            string[] headerParts = packetParts[0].Split(BasicUtility.NewLineDelimiters, StringSplitOptions.None);
             string[] protocolParts = headerParts[0].Split(new string[] { " " }, StringSplitOptions.None);
             ParseProtocol(protocolParts[0]);
             ParseStatus(protocolParts[1]);

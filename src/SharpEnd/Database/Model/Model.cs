@@ -49,28 +49,27 @@ namespace SharpEnd.Model
             MySqlCommand command = BuildCommand(query);
             MySqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
-            {
                 Rows.Add(ReadRow(reader));
-            }
             return Rows;
         }
-
+        private MySqlCommand BuildCommand(MySqlQuery query)
+        {
+            MySqlCommand command = _connection.GetConnection().CreateCommand();
+            command.CommandText = query.ToString();
+            return command;
+        }
         private object? ReadRow(MySqlDataReader reader) 
         {
             object? tableRow = Activator.CreateInstance(_modelType);
             foreach (PropertyInfo property in _modelType.GetProperties())
-            {
                 property.SetValue(tableRow, Convert.ChangeType(reader[property.Name], property.PropertyType));
-            }
             return tableRow;
         }
 
         public void SaveInstance()
         {
             if (Instance == null)
-            {
                 throw new Exception("Instance is not initialized. Cannot perform save operation.");
-            }
             IDictionary<string, object>? expandoDict = Instance as IDictionary<string, object>;
             Dictionary<string, string> values = new Dictionary<string, string>();
             foreach (var key in expandoDict.Keys)
@@ -84,13 +83,6 @@ namespace SharpEnd.Model
         public List<string> GetColumns()
         {
             return ModelUtils.GetPropertyStrings(_ORMObject);
-        }
-
-        private MySqlCommand BuildCommand(MySqlQuery query) 
-        {
-            MySqlCommand command = _connection.GetConnection().CreateCommand();
-            command.CommandText = query.ToString();
-            return command;
         }
         public Model Where(string whereClause)
         {
@@ -144,7 +136,6 @@ namespace SharpEnd.Model
             MySqlCommand command = connection.CreateCommand();
             command.CommandText = commandText;
             command.ExecuteNonQuery();
-
         }
         public override string ToString()
         {

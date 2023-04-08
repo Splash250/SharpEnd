@@ -1,6 +1,5 @@
-﻿using SharpEnd.Miscellaneous;
-using SharpEnd.Packet;
-
+﻿using SharpEnd.Packet;
+using SharpEnd.Utils;
 namespace SharpEnd.Cookies
 {
     public class Session
@@ -39,7 +38,7 @@ namespace SharpEnd.Cookies
                 sess._sessionId = sess._cookies.GetCookie(sess._uri, "SHARPSESSID").Value;
             else
             {
-                sess._sessionId = Utility.GenerateSessionId();
+                sess._sessionId = BasicUtility.GenerateSessionId();
                 Cookie sessCookie = new Cookie("SHARPSESSID", sess._sessionId, sess._uri.Path);
                 sess._cookies.AddCookie(sessCookie);
                 sess._modifiedCookies.AddCookie(sessCookie);

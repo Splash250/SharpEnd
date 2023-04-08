@@ -1,9 +1,9 @@
-﻿using SharpEnd.Miscellaneous;
-using SharpEnd.Packet;
+﻿using SharpEnd.Packet;
+using SharpEnd.Server;
 using System.Net.Sockets;
 using System.Text;
 
-namespace SharpEnd.Server
+namespace SharpEnd.Utils
 {
     internal static class NetworkUtils
     {
@@ -12,6 +12,22 @@ namespace SharpEnd.Server
             byte[] responseBytes = new byte[bufferLength];
             _ = responseFrom.Receive(responseBytes);
             return Encoding.UTF8.GetString(responseBytes);
+        }
+        public static bool SendBytes(Socket destination, byte[] bytes)
+        {
+            //send bytes to destination in 1024 byte chunks until all bytes are sent if the destination is not connected ot the sending fails then return false
+            int sent = 0;
+            while (sent < bytes.Length)
+            {
+                int bytesSent = destination.Send(bytes, sent, bytes.Length - sent, SocketFlags.None);
+                if (bytesSent == 0)
+                {
+                    return false;
+                }
+                sent += bytesSent;
+            }
+            return true;
+
         }
 
         public static byte[] ReceiveAll(this Socket socket)
@@ -34,7 +50,7 @@ namespace SharpEnd.Server
 
         public static async Task<byte[]> ReadAllBytesAsync(Socket client)
         {
-            byte[] buffer = new byte[Utility.DefaultBufferSize];
+            byte[] buffer = new byte[BasicUtility.DefaultBufferSize];
             int bytesRead;
             using MemoryStream ms = new MemoryStream();
             do
@@ -81,7 +97,7 @@ namespace SharpEnd.Server
 
         public static bool IsFileRequest(RequestPacket requestPacket)
         {
-            return Utility.IsFilePath(WebServer.HTMLPath + requestPacket.Uri.Path);
+            return BasicUtility.IsFilePath(WebServer.HTMLPath + requestPacket.Uri.Path);
         }
         public static ResponsePacket CraftFileSendHeaderPacket(int contentLength) 
         {

@@ -1,6 +1,6 @@
-﻿namespace SharpEnd.Miscellaneous
+﻿namespace SharpEnd.Utils
 {
-    internal static class Utility
+    internal static class BasicUtility
     {
         public static readonly string[] DoubleNewLineDelimiters = new string[] {
                     "\r\n\r\n",

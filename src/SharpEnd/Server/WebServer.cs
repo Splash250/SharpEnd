@@ -3,6 +3,7 @@ using System.Net;
 using System.Text;
 using SharpEnd.Packet;
 using SharpEnd.Resources;
+using SharpEnd.Utils;
 
 namespace SharpEnd.Server
 {

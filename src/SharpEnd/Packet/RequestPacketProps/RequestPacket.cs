@@ -1,5 +1,5 @@
 ﻿using SharpEnd.Cookies;
-using SharpEnd.Miscellaneous;
+using SharpEnd.Utils;
 using System.Dynamic;
 
 namespace SharpEnd.Packet
@@ -7,40 +7,29 @@ namespace SharpEnd.Packet
     public class RequestPacket
     {
 
-        public RequestMethod Method { get; private set; }
-        public RequestQuery Query { get; private set; }
-        public string Fragment { get; private set; }
-        public PacketProtocol Protocol { get; private set; }
-        public PacketHeaderCollection Headers { get; private set; }
-        public ExpandoObject Payload { get; private set; }
-        public CookieContainer Cookies { get; private set; }
-
-        private string _rawPacket;
-
-        private string _path;
-        private RequestHost _host;
-        public RequestUri Uri 
-        {
-            get 
-            {
-                return new RequestUri(_host, _path);
-            }
-        }
+        public RequestMethod Method { get; internal set; }
+        public PacketProtocol Protocol { get; internal set; }
+        public PacketHeaderCollection Headers { get; internal set; }
+        public ExpandoObject Payload { get; internal set; }
+        public CookieContainer Cookies { get; internal set; }
+        public RequestUri Uri { get; internal set; }
+        private readonly string _rawPacket;
 
 
-        public bool HasPayload
+        public bool HasPayload => !PayloadUtils.IsNullOrEmpty(Payload);
+        public bool HasQuery
         {
             get
             {
-                return !PayloadUtils.IsNullOrEmpty(Payload);
+                return Uri.HasQuery;
             }
         }
         public RequestPacket(string packet)
         {
-
             string[] lines = SplitPacket(packet);
             string[] requestLine = lines[0].Split(' ');
             _rawPacket = packet;
+            Uri = new RequestUri();
             ParseMethod(requestLine[0]);
             ParseQueryAndPath(requestLine[1]);
             ParseProtocol(requestLine[2]);
@@ -48,7 +37,6 @@ namespace SharpEnd.Packet
             ParseHost(Headers.TakeHeader("Host"));
             ParseCookies();
             ParsePayload(packet);
-
         }
         private string[] SplitPacket(string packet) 
         {
@@ -94,7 +82,7 @@ namespace SharpEnd.Packet
         }
         private void ParseHost(string hostString)
         {
-            _host = new RequestHost(hostString);
+            Uri.Host = new RequestHost(hostString);
         }
 
         private void ParseHeaders(string[] headerLines)
@@ -109,26 +97,32 @@ namespace SharpEnd.Packet
 
         private void ParseQueryAndPath(string path)
         {
+            RequestQuery query;
+            string uriPath;
+            Console.WriteLine(path);
             if (path.Contains('?'))
             {
                 string[] pathParts = path.Split('?');
-                _path = pathParts[0];
-                Query = new RequestQuery(pathParts[1]);
+                uriPath = pathParts[0];
+                Console.WriteLine(pathParts[1]);
+                query = new RequestQuery(pathParts[1]);
             }
             else
             {
-                _path = path;
-                Query = new RequestQuery(String.Empty);
+                uriPath = path;
+                query = new RequestQuery(String.Empty);
             }
+            Uri.Query = query;
+            Uri.Path= uriPath;
+
         }
 
         private ExpandoObject GetRequestPayload(string wholePacket) 
         {
-            string body = String.Empty;
             if (ContainsPayload(wholePacket)) 
             {
-                string[] packetParts = wholePacket.Split(Utility.DoubleNewLineDelimiters, 2, StringSplitOptions.None);
-                body = packetParts.Last();
+                string[] packetParts = wholePacket.Split(BasicUtility.DoubleNewLineDelimiters, 2, StringSplitOptions.None);
+                string body = packetParts.Last();
                 return PayloadUtils.ToExpandoObject(body, GetContentType());
             }
             return new ExpandoObject();
@@ -140,7 +134,7 @@ namespace SharpEnd.Packet
         }
         private static bool ContainsPayload(string wholePacket) 
         {
-            var sections = wholePacket.Split(Utility.DoubleNewLineDelimiters, StringSplitOptions.None);
+            var sections = wholePacket.Split(BasicUtility.DoubleNewLineDelimiters, StringSplitOptions.None);
 
             if (sections.Length < 2)
                 return false;

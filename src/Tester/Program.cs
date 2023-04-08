@@ -1,9 +1,8 @@
 ﻿//we have to include these usings in order to be able to worh with SharpEnd
 using SharpEnd;
 using SharpEnd.Packet;
-using Tester;
 
-namespace MyConsoleApp
+namespace Tester
 {
     class Program
     {
