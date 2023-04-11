@@ -79,11 +79,7 @@ namespace Tester
             //todo: make a custom request class that can implement guards and easier handling to the payload's values
             //also should make some extension methods to the request packet for example: Url() or Is() or RouteIs() or IsMethod() ect. to make things cleaner
 
-            if (requestPacket.Uri.Query.Has("buzi"))
-            {
-                Console.WriteLine("van buzi");
-            }
-            
+            Console.WriteLine(requestPacket.Query["test"]);
             if (requestPacket.Method == RequestMethod.POST)
             {
                 dynamic Payload = requestPacket.Payload;

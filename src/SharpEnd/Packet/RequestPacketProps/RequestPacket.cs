@@ -13,23 +13,30 @@ namespace SharpEnd.Packet
         public ExpandoObject Payload { get; internal set; }
         public CookieContainer Cookies { get; internal set; }
         public RequestUri Uri { get; internal set; }
+        public RequestQuery Query { get; set; }
+
         private readonly string _rawPacket;
 
 
+
+
         public bool HasPayload => !PayloadUtils.IsNullOrEmpty(Payload);
-        public bool HasQuery
+        public bool HasQuery 
         {
-            get
+            get 
             {
-                return Uri.HasQuery;
-            }
+                return !Query.IsEmpty;
+            }            
         }
+
+
         public RequestPacket(string packet)
         {
             string[] lines = SplitPacket(packet);
             string[] requestLine = lines[0].Split(' ');
             _rawPacket = packet;
             Uri = new RequestUri();
+            Query = RequestQuery.Empty;
             ParseMethod(requestLine[0]);
             ParseQueryAndPath(requestLine[1]);
             ParseProtocol(requestLine[2]);
@@ -97,7 +104,7 @@ namespace SharpEnd.Packet
 
         private void ParseQueryAndPath(string path)
         {
-            RequestQuery query;
+            RequestQuery query = RequestQuery.Empty;
             string uriPath;
             Console.WriteLine(path);
             if (path.Contains('?'))
@@ -108,11 +115,9 @@ namespace SharpEnd.Packet
                 query = new RequestQuery(pathParts[1]);
             }
             else
-            {
                 uriPath = path;
-                query = new RequestQuery(String.Empty);
-            }
-            Uri.Query = query;
+
+            Query = query;
             Uri.Path= uriPath;
 
         }
