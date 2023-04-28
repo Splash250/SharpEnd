@@ -10,7 +10,7 @@ namespace SharpEnd.Model
     public abstract class Model
     {
         private ObjectRelationMapper _ORMObject;
-        private MySqlDataBaseConnection _connection;
+        private readonly MySqlDataBaseConnection _connection;
         private MySqlQuery _mySqlQuery;
         private MySqlQuery _newMySqlQuery { get { return new MySqlQuery().Select("*").From(_tableName); } }
         private Type _modelType { get { return _ORMObject.GetType(); } }
@@ -71,7 +71,7 @@ namespace SharpEnd.Model
             if (Instance == null)
                 throw new Exception("Instance is not initialized. Cannot perform save operation.");
             IDictionary<string, object>? expandoDict = Instance as IDictionary<string, object>;
-            Dictionary<string, string> values = new Dictionary<string, string>();
+            Dictionary<string, string> values = new();
             foreach (var key in expandoDict.Keys)
                 values.Add(key, MySqlValueConverter.ConvertValue(expandoDict[key]));
             MySqlActions.InsertData(_connection, TableName, values);

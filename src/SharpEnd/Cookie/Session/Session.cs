@@ -26,7 +26,7 @@ namespace SharpEnd.Cookies
         }
         public static Session Start(RequestPacket request)
         {
-            Session session = new Session();
+            Session session = new();
             session._cookies = request.Cookies;
             session._uri = request.Uri;
             HandleSessionId(session);
@@ -39,7 +39,7 @@ namespace SharpEnd.Cookies
             else
             {
                 sess._sessionId = BasicUtility.GenerateSessionId();
-                Cookie sessCookie = new Cookie("SHARPSESSID", sess._sessionId, sess._uri.Path);
+                Cookie sessCookie = new("SHARPSESSID", sess._sessionId, sess._uri.Path);
                 sess._cookies.AddCookie(sessCookie);
                 sess._modifiedCookies.AddCookie(sessCookie);
             }

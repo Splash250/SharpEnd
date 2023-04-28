@@ -2,7 +2,7 @@
 {
     internal class MultiDictionary<TKey, TValue>
     {
-        private Dictionary<TKey, List<TValue>> _dictionary = new Dictionary<TKey, List<TValue>>();
+        private readonly Dictionary<TKey, List<TValue>> _dictionary;
 
         public int Count
         {
@@ -45,10 +45,8 @@
         public bool HasValue(TValue value)
         {
             foreach (var list in _dictionary.Values)
-            {
                 if (list.Contains(value))
                     return true;
-            }
 
             return false;
         }

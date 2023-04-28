@@ -28,5 +28,9 @@
                 Version = "";
             }
         }
+        public override string ToString()
+        {
+            return Name + "/" + Version;
+        }
     }
 }

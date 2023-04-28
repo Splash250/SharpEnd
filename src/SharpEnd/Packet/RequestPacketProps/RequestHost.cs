@@ -53,8 +53,10 @@ namespace SharpEnd.Packet
         }
         public IPAddress ResolveIp()
         {
-            if (IsDNS)
-                return Dns.GetHostAddresses(Domain)[0];
+            if (IsDNS) {
+                IPHostEntry ipHostInfo = Dns.GetHostEntry(Domain);
+                return ipHostInfo.AddressList[0];
+            }
             else
                 return IPAddress.Parse(Domain);
         }

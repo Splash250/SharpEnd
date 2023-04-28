@@ -4,12 +4,9 @@ using SharpEnd.Utils;
 
 namespace SharpEnd.Packet
 {
-    public class ResponsePacket
+    public class ResponsePacket : Packet
     {
-        public PacketProtocol Protocol { get; set; }
         public ResponseStatus Status { get; set; }
-        public PacketHeaderCollection Headers { get; set; }
-        public CookieContainer CookieContainer { get; set; }
         public string Body { get; set; }
 
         public ResponsePacket(PacketProtocol protocol, ResponseCode code, PacketHeaderCollection headers)
@@ -100,9 +97,9 @@ namespace SharpEnd.Packet
 
         public void SetCookie(Cookie cookie) 
         {
-            if (CookieContainer == null) 
-                CookieContainer = new CookieContainer();
-            CookieContainer.AddCookie(cookie);
+            if (Cookies == null) 
+                Cookies = new CookieContainer();
+            Cookies.AddCookie(cookie);
             Headers.AddHeader("Set-Cookie", cookie.ToString());
         }
         public void ApplySession(Session session)

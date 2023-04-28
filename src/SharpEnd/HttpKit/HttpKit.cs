@@ -7,6 +7,7 @@ namespace SharpEnd.HttpKit
         //{
         //    HttpClient client = new HttpClient();
         //    client.Connect(new RequestUri(uri));
+        //    RequestPacket packet = new RequestPacket();
         //    client.SendRequest();
         //}
     }

@@ -96,6 +96,7 @@ namespace Tester
         {
             Test model = new(Program.dataBase.Connection);
             model.DeleteAll();
+            Console.WriteLine("testClearDB");
             return DatabasePage(requestPacket);
         }
         //here we create a table from all the data inside 'testtable' table

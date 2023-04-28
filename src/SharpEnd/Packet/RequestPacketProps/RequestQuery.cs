@@ -19,6 +19,9 @@ namespace SharpEnd.Packet
         }
         private void ReadSingleQuery(string query)
         {
+            if (!query.Contains('='))
+                throw BaseExceptions.MalformedQueryException;
+
             string[] queryParts = query.Split('=');
             _values.Add(queryParts[0], queryParts[1]);
         }

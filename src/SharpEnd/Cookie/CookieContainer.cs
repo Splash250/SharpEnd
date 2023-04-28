@@ -5,7 +5,7 @@ namespace SharpEnd.Cookies
 {
     public class CookieContainer : IEnumerable<Cookie>
     {
-        private Dictionary<string, Cookie> _cookies;
+        private readonly Dictionary<string, Cookie> _cookies;
         public static CookieContainer Empty
         {
             get
@@ -61,13 +61,13 @@ namespace SharpEnd.Cookies
             return cookies;
         }
 
-        private bool ValidCookie(Cookie cookie, RequestUri uri) 
+        private static bool ValidCookie(Cookie cookie, RequestUri uri) 
         {
             return !cookie.Expired && cookie.Domain == uri.Host.ToString() && cookie.Path == uri.Path;
         }
         public static CookieContainer Parse(string cookieHeader, RequestUri uri)
         {
-            CookieContainer container = new CookieContainer();
+            CookieContainer container = new();
             container.ParseCookies(cookieHeader, uri);
             return container;
         }

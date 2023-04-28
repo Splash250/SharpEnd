@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Net;
+using System.Text;
 
 namespace SharpEnd.Packet
 {
@@ -7,14 +8,13 @@ namespace SharpEnd.Packet
         public RequestHost Host { get; set; }
         public string Path { get; set; }
         public string Fragment { get; set; }
-
-        public bool HasFragment => !String.IsNullOrEmpty(Fragment);
+        private string _rawUri;
 
         public RequestUri() 
         {
 
             Host = new RequestHost();
-            Path = String.Empty;
+            Path = "/";
             Fragment = String.Empty;
         }
         public RequestUri(RequestHost host, string path)
@@ -36,21 +36,48 @@ namespace SharpEnd.Packet
 
         public RequestUri(string url)
         {
-            string[] urlParts = url.Split('?');
-            string[] hostParts = urlParts[0].Split('/');
-            Host = new RequestHost(hostParts[0]);
-            Path = hostParts[1];
-
-            if(url.Contains("#"))
+            _rawUri = url;
+            if (HasFragment(url))
             {
-                string[] urlParts2 = url.Split('#');
-                Fragment = urlParts2[1];
+                string[] urlParts = url.Split('#');
+                Fragment = urlParts[1];
+                url = urlParts[0];
+            }
+
+            if (HasQuery(url))
+            {
+                string[] urlParts = url.Split('?');
+                url = urlParts[0];
+            }
+
+            if (HasPath(url))
+            {
+                string[] urlParts = url.Split('/', 2);
+                Host = new RequestHost(urlParts[0]);
+                Path = urlParts[1];
+            }
+            else
+            {
+                Host = new RequestHost(url);
+                Path = "/";
             }
         }
 
+        public IPEndPoint GetEndPoint()
+        {
+            return new IPEndPoint(Host.ResolveIp(), (int)Host.Port);
+        }
+
+        private bool HasPath(string url) 
+        {
+            return url.Contains('/') && url.IndexOf('/') != url.Length - 1; 
+        }
+        private bool HasQuery(string url) => url.Contains('?');
+        private bool HasFragment(string url) => url.Contains('#');
+
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             sb.Append(Host.ToString());
             sb.Append('/');
             sb.Append(Path);

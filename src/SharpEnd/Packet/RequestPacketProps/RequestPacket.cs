@@ -1,22 +1,20 @@
 ﻿using SharpEnd.Cookies;
 using SharpEnd.Utils;
 using System.Dynamic;
+using System.Text;
 
 namespace SharpEnd.Packet
 {
-    public class RequestPacket
+    public class RequestPacket : Packet
     {
 
         public RequestMethod Method { get; internal set; }
-        public PacketProtocol Protocol { get; internal set; }
-        public PacketHeaderCollection Headers { get; internal set; }
         public ExpandoObject Payload { get; internal set; }
-        public CookieContainer Cookies { get; internal set; }
         public RequestUri Uri { get; internal set; }
         public RequestQuery Query { get; set; }
 
         private readonly string _rawPacket;
-
+        private string _payloadString;
 
 
 
@@ -25,11 +23,51 @@ namespace SharpEnd.Packet
         {
             get 
             {
+                if (Query == null)
+                    return false;
                 return !Query.IsEmpty;
             }            
         }
 
 
+        public RequestPacket(string uri, RequestMethod requestMethod, PacketHeaderCollection headerCollection)
+        {
+            _rawPacket = String.Empty;
+            Uri = new RequestUri(uri);
+            Headers = headerCollection;
+            _payloadString = String.Empty;
+            Protocol = PacketProtocol.Default;
+        }
+        public RequestPacket(string uri, RequestMethod requestMethod, string payload, PacketHeaderCollection headerCollection)
+        {
+            _rawPacket = String.Empty;
+            Uri = new RequestUri(uri);
+            Headers = headerCollection;
+            _payloadString = payload;
+            Protocol = PacketProtocol.Default;
+
+        }
+        public RequestPacket(string uri, RequestMethod requestMethod, PacketHeaderCollection headerCollection, CookieContainer cookies)
+        {
+            _rawPacket = String.Empty;
+            Uri = new RequestUri(uri);
+
+            Headers = headerCollection;
+            Cookies = cookies;
+            Protocol = PacketProtocol.Default;
+
+        }
+        public RequestPacket(string uri, RequestMethod requestMethod, string payload, PacketHeaderCollection headerCollection, CookieContainer cookies)
+        {
+            _rawPacket = String.Empty;
+            Uri = new RequestUri(uri);
+            Headers = headerCollection;
+            Cookies = cookies;
+            _payloadString = payload;
+            Cookies = cookies;
+            Protocol = PacketProtocol.Default;
+
+        }
         public RequestPacket(string packet)
         {
             string[] lines = SplitPacket(packet);
@@ -111,8 +149,8 @@ namespace SharpEnd.Packet
             {
                 string[] pathParts = path.Split('?');
                 uriPath = pathParts[0];
-                Console.WriteLine(pathParts[1]);
-                query = new RequestQuery(pathParts[1]);
+                try { query = new RequestQuery(pathParts[1]); }
+                catch (QueryException ex) { throw ex; }
             }
             else
                 uriPath = path;
@@ -128,6 +166,7 @@ namespace SharpEnd.Packet
             {
                 string[] packetParts = wholePacket.Split(BasicUtility.DoubleNewLineDelimiters, 2, StringSplitOptions.None);
                 string body = packetParts.Last();
+                _payloadString = body;
                 return PayloadUtils.ToExpandoObject(body, GetContentType());
             }
             return new ExpandoObject();
@@ -164,6 +203,30 @@ namespace SharpEnd.Packet
 
         public override string ToString()
         {
+            
+            if (string.IsNullOrEmpty(_rawPacket))
+            {
+                StringBuilder builder = new StringBuilder();
+                builder.Append(Method.ToString().ToUpper());
+                builder.Append(' ');
+                builder.Append(Uri.Path);
+                if (HasQuery)
+                {
+                    builder.Append('?');
+                    builder.Append(Query.ToString());
+                }
+                builder.Append(' ');
+                builder.Append(Protocol.ToString());
+                builder.Append("\r\n");
+                builder.Append(Headers.ToString());
+                builder.Append("\r\n");
+                if (HasPayload)
+                {
+                    builder.Append("\r\n");
+                    builder.Append(_payloadString);
+                }
+                return builder.ToString();
+            }
             return _rawPacket;
         }
     }   

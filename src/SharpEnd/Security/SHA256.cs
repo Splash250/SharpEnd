@@ -3,7 +3,7 @@ using System.Text;
 
 namespace SharpEnd.Security
 {
-    public class SHA256
+    internal class SHA256
     {
         private uint[] hashValues;
         private uint[] kConstants;

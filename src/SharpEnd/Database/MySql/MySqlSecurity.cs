@@ -5,9 +5,5 @@ using System.Data;
 namespace SharpEnd.Database.MySql
 {
     internal static class MySqlSecurity
-    {
-
-
-
-    }
+    {}
 }

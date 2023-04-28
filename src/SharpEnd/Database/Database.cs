@@ -14,10 +14,7 @@ namespace SharpEnd.Database
         {
             get
             {
-                if (_connection == null)
-                {
-                    _connection = new MySqlDataBaseConnection(_getConfig);
-                }
+                _connection ??= new MySqlDataBaseConnection(_getConfig);
                 return _connection;
             }
         }
@@ -30,12 +27,12 @@ namespace SharpEnd.Database
         }
         public void CreateSchema(Blueprint schemaBlueprint) 
         {
-            Migration migration = new Migration(Connection);
+            Migration migration = new(Connection);
             migration.Create(schemaBlueprint);
         }
         public void InsertRow(string tableName,Dictionary<string, string> rowData)
         {
-            Seeder seeder = new Seeder(Connection);
+            Seeder seeder = new(Connection);
             seeder.Run(tableName, rowData);
         }
     }
