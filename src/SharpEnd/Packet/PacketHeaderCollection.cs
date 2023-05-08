@@ -24,7 +24,7 @@ namespace SharpEnd.Packet
     
         public void AddHeader(string name, string value)
         {
-            PacketHeader header = new PacketHeader(name, value);
+            PacketHeader header = new(name, value);
             _headerDict.Add(name, header);
         }
 
@@ -45,7 +45,7 @@ namespace SharpEnd.Packet
         }
         public List<string> TakeHeaderValues (string headerName)
         {
-            List<string> values = new List<string>();
+            List<string> values = new();
             if (_headerDict.TryGetValues(headerName, out List<PacketHeader> headers))
             {
                 foreach (PacketHeader header in headers)
@@ -63,7 +63,7 @@ namespace SharpEnd.Packet
         }
         public List<string> GetHeaderValues(string headerName)
         {
-            List<string> values = new List<string>();
+            List<string> values = new();
             if (_headerDict.TryGetValues(headerName, out List<PacketHeader> headers))
                 foreach (PacketHeader header in headers)
                     values.Add(header.Value);
@@ -71,7 +71,7 @@ namespace SharpEnd.Packet
         }
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             foreach (List<PacketHeader> headerValues in _headerDict.Values)
             {
                 foreach (PacketHeader item in headerValues)

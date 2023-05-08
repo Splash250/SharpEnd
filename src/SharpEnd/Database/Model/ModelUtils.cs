@@ -8,7 +8,7 @@ namespace SharpEnd.Model
     {
         public static List<string> GetPropertyStrings(ObjectRelationMapper map)
         {
-            List<string> props = new List<string>();
+            List<string> props = new();
             foreach (var property in map.GetType().GetProperties())
             {
                 props.Add(property.Name);
@@ -17,7 +17,7 @@ namespace SharpEnd.Model
         }
         public static List<string> GetRowValueStrings(object? rowObject) 
         {
-            List<string> values = new List<string>();
+            List<string> values = new();
             foreach (var property in GetPropertyInfos(rowObject))
             {
                 values.Add(property.GetValue(rowObject).ToString());

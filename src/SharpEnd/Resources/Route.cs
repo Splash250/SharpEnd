@@ -4,11 +4,10 @@ namespace SharpEnd.Resources
 {
     public class Route
     {
-        public delegate ResponsePacket ControllerDelegate(RequestPacket request);
+        public Func<RequestPacket, Task<ResponsePacket>> Controller;
         public RequestMethod RequestMethod { get; set; }
-        public ControllerDelegate Controller { get; set; }
         public string Path { get; set; }
-        public Route(RequestMethod method, string path, ControllerDelegate controller)
+        public Route(RequestMethod method, string path, Func<RequestPacket, Task<ResponsePacket>> controller)
         {
             RequestMethod = method;
             Path = path;

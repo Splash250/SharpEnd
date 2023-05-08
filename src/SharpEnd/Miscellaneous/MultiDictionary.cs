@@ -55,7 +55,7 @@
             if (_dictionary.TryGetValue(key, out List<TValue> values))
                 return values[index];
 
-            return default(TValue);
+            return default;
         }
         public List<TValue> GetValues(TKey key)
         {
@@ -76,7 +76,7 @@
                 return true;
             }
 
-            value = default(TValue);
+            value = default;
             return false;
         }
         public List<TValue> this[TKey key]

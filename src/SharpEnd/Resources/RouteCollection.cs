@@ -16,7 +16,7 @@ namespace SharpEnd.Resources
         {
             Routes = new List<Route>();
         }
-        public void Add(RequestMethod method, string path, Route.ControllerDelegate controller)
+        public void Add(RequestMethod method, string path, Func<RequestPacket, Task<ResponsePacket>> controller)
         {
             Routes.Add(new Route(method, path, controller));
         }

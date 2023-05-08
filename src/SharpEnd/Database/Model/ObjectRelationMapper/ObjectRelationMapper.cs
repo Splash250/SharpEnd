@@ -22,9 +22,8 @@ namespace SharpEnd.ORM
         public Type GetType()
         {
             if (_type == null)
-            {
                 _type = CreateType();
-            }
+
             return _type;
         }
 
@@ -39,9 +38,8 @@ namespace SharpEnd.ORM
             CreateConstructor(typeBuilder);
             IEnumerable<ColumnInfo> columns = GetColumns();
             foreach (var column in columns)
-            {
                 CreateProperty(typeBuilder, column.Name, column.Type);
-            }
+
             Type objectType = typeBuilder.CreateType();
             return objectType;
         }

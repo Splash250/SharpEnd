@@ -16,7 +16,7 @@ namespace SharpEnd
             _webServer.Start(port, backlog);
         }
 
-        public void Route(RequestMethod method,string path, Route.ControllerDelegate controller)
+        public void Route(RequestMethod method,string path, Func<RequestPacket, Task<ResponsePacket>> controller)
         { 
             _webServer.AddRoute(method, path, controller);
         }

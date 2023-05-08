@@ -107,7 +107,7 @@ namespace SharpEnd.Server
             NetworkUtils.SendResponsePacketAsync(client, responsePacket);
         }
 
-        public void AddRoute(RequestMethod method, string path, Route.ControllerDelegate controller)
+        public void AddRoute(RequestMethod method, string path, Func<RequestPacket, Task<ResponsePacket>> controller)
         {
             Routes.Add(method, path, controller);
         }
@@ -140,7 +140,7 @@ namespace SharpEnd.Server
         //make an async method that runs a route's controller this method should return a response packet
         private async Task<ResponsePacket> HandleRoute(Route route, RequestPacket requestPacket)
         {
-            return await Task.Run(() => route.Controller(requestPacket));
+            return await route.Controller(requestPacket);
         }
 
         public void CloseServer()

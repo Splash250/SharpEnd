@@ -68,12 +68,12 @@ namespace SharpEnd.Packet
             return new IPEndPoint(Host.ResolveIp(), (int)Host.Port);
         }
 
-        private bool HasPath(string url) 
+        private static bool HasPath(string url) 
         {
             return url.Contains('/') && url.IndexOf('/') != url.Length - 1; 
         }
-        private bool HasQuery(string url) => url.Contains('?');
-        private bool HasFragment(string url) => url.Contains('#');
+        private static bool HasQuery(string url) => url.Contains('?');
+        private static bool HasFragment(string url) => url.Contains('#');
 
         public override string ToString()
         {

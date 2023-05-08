@@ -11,7 +11,7 @@ namespace Tester
     {
         //all of the methods are static 
         //this class contains all methods that are associated with routes
-        public static ResponsePacket Index(RequestPacket requestPacket)
+        public static async Task<ResponsePacket> Index(RequestPacket requestPacket)
         {
             //here we have to create a view that has 3 parameters
             //first the name of the view
@@ -53,7 +53,7 @@ namespace Tester
         }
 
         //the same implementation happens here
-        public static ResponsePacket OtherPage(RequestPacket requestPacket)
+        public static async Task<ResponsePacket> OtherPage(RequestPacket requestPacket)
         {
             View view = View.Create(
                 "other.html",
@@ -72,7 +72,7 @@ namespace Tester
 
         //here we include a table from the test model's data to the webpage
         //everything else is the same as above
-        public static ResponsePacket DatabasePage(RequestPacket requestPacket)
+        public static async Task<ResponsePacket> DatabasePage(RequestPacket requestPacket)
         {
             Test model = new(Program.dataBase.Connection);
 
@@ -92,12 +92,12 @@ namespace Tester
             View view = CreateDBPage(model);
             return ResponsePacket.HTMLResponsePacket(view);
         }
-        public static ResponsePacket ClearDatabase(RequestPacket requestPacket) 
+        public static async Task<ResponsePacket> ClearDatabase(RequestPacket requestPacket) 
         {
             Test model = new(Program.dataBase.Connection);
             model.DeleteAll();
             Console.WriteLine("testClearDB");
-            return DatabasePage(requestPacket);
+            return await DatabasePage(requestPacket);
         }
         //here we create a table from all the data inside 'testtable' table
         public static View CreateDBPage(Test fromModel) 
