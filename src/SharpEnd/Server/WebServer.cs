@@ -4,9 +4,13 @@ using System.Text;
 using SharpEnd.Packet;
 using SharpEnd.Resources;
 using SharpEnd.Utils;
+using SharpEnd;
+
 
 namespace SharpEnd.Server
 {
+    using RouteFunc = System.Func<SharpEnd.Packet.RequestPacket, System.Threading.Tasks.Task<SharpEnd.Packet.ResponsePacket>>;
+
     internal class WebServer
     {
         private List<Socket> _clients { get; set; }
@@ -107,7 +111,7 @@ namespace SharpEnd.Server
             NetworkUtils.SendResponsePacketAsync(client, responsePacket);
         }
 
-        public void AddRoute(RequestMethod method, string path, Func<RequestPacket, Task<ResponsePacket>> controller)
+        public void AddRoute(RequestMethod method, string path, RouteFunc controller)
         {
             Routes.Add(method, path, controller);
         }

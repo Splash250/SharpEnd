@@ -2,6 +2,7 @@
 using SharpEnd;
 using SharpEnd.HttpKit;
 using SharpEnd.Packet;
+using SharpEnd.Resources;
 
 namespace Tester
 {
@@ -33,6 +34,20 @@ namespace Tester
             app.Route(RequestMethod.GET, "/cleardb", Controller.ClearDatabase);
             app.Route(RequestMethod.POST, "/db", Controller.DatabasePage);
 
+
+            //you can also achieve the same but by passing anonymous async methods
+            app.Route(RequestMethod.GET, "/test", 
+                async request =>
+                {
+                    string body = "Anonymous :3";
+                    return new ResponsePacket(
+                    PacketProtocol.Default, ResponseCode.OK,
+                    new PacketHeaderCollection(new string[] {
+                        "Content-Type: text/html; charset=UTF-8",
+                        "Content-Length: " + body.Length
+                    }),
+                    body);
+                }); 
             //here we start our app which starts the webserver on port 8080 and the backlog of 20
 
             app.Start(1234, 20);

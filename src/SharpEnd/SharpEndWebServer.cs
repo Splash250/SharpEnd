@@ -2,8 +2,11 @@
 using SharpEnd.Resources;
 using SharpEnd.Server;
 
+
 namespace SharpEnd
 {
+    using RouteFunc = System.Func<SharpEnd.Packet.RequestPacket, System.Threading.Tasks.Task<SharpEnd.Packet.ResponsePacket>>;
+
     public class SharpEndWebServer
     {
         private WebServer _webServer;
@@ -16,7 +19,7 @@ namespace SharpEnd
             _webServer.Start(port, backlog);
         }
 
-        public void Route(RequestMethod method,string path, Func<RequestPacket, Task<ResponsePacket>> controller)
+        public void Route(RequestMethod method,string path, RouteFunc controller)
         { 
             _webServer.AddRoute(method, path, controller);
         }
