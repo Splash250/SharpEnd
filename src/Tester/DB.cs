@@ -9,8 +9,8 @@ namespace Tester
         {
             Address = "127.0.0.1";
             Port = 3306;
-            UserName= "root";
-            Password = "";
+            UserName= "user";
+            Password = "passwd";
             DatabaseName = "sharpend";
         }
         public void Migrate() {

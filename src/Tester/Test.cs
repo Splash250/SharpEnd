@@ -7,7 +7,7 @@ namespace Tester
     {
         public Test(MySqlDataBaseConnection connection) : base(connection) 
         {
-            TableName = "testtable";
+            TableName = "testTable";
         }
     }
 }

@@ -1,1 +1,1 @@
-docker-compose -f compose.yml -p="railway-network" up -d
+docker-compose -f compose.yml -p="sharpend" up -d
